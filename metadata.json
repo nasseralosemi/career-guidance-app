@@ -1,0 +1,6 @@
+{
+  "name": "بوابة الشراكة الأكاديمية للإرشاد والتطوير المهني",
+  "description": "بوابة الشراكة الأكاديمية الذكية بالكلية التطبيقية - وحدة الإرشاد المهني والتوظيف",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

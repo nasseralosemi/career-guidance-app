@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Noto Kufi Arabic', 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.font-kufi {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+.font-tajawal {
+  font-family: 'Tajawal', sans-serif;
+}
+
+.font-cairo {
+  font-family: 'Cairo', sans-serif;
+}
+
+/* Geometric Balance Colors & Utility Classes */
+.university-blue {
+  background-color: #1E3A8A;
+}
+
+.university-gold {
+  background-color: #B45309;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.dark-glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Geometric subtle grid & watermark */
+.bg-geometric-grid {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-geometric-subtle {
+  background-image: radial-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.bg-arabesque-pattern {
+  background-color: #f8fafc;
+  background-image: radial-gradient(#1e3a8a 0.6px, transparent 0.6px), radial-gradient(#b45309 0.6px, #f8fafc 0.6px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* Certificate Print Styler */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-certificate, .printable-certificate * {
+    visibility: visible;
+  }
+  .printable-certificate {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
