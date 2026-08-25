@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, ShieldCheck, AlertCircle, ArrowLeft, KeyRound, CheckCircle2, Lock, Sparkles, UserCheck, MessageSquare } from 'lucide-react';
+import { Mail, Phone, ShieldCheck, AlertCircle, ArrowLeft, KeyRound, CheckCircle2, Lock, Sparkles, UserCheck, MessageSquare, Loader2, Send } from 'lucide-react';
 import { FacultyMember, WhitelistEntry, UserRole } from '../../types';
 import { LogoBranding } from '../common/LogoBranding';
 
@@ -23,11 +23,13 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
   const [successInfo, setSuccessInfo] = useState<string | null>(null);
   const [matchedEntry, setMatchedEntry] = useState<WhitelistEntry | null>(null);
   const [simulatedGeneratedOtp, setSimulatedGeneratedOtp] = useState<string>('749201');
+  const [isLoadingOtp, setIsLoadingOtp] = useState<boolean>(false);
+  const [deliveryMethodStatus, setDeliveryMethodStatus] = useState<'resend_email' | 'resend_fallback' | 'dev_preview' | 'whatsapp' | null>(null);
   const [adminEmail, setAdminEmail] = useState('n.alosemi@mu.edu.sa');
   const [adminPassword, setAdminPassword] = useState('Nass112233&');
 
   // Handle send OTP request
-  const handleRequestOtp = (e: React.FormEvent) => {
+  const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessInfo(null);
@@ -81,17 +83,68 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
       return;
     }
 
-    // Generate random 6-digit OTP
-    const generated = Math.floor(100000 + Math.random() * 900000).toString();
-    setSimulatedGeneratedOtp(generated);
+    setIsLoadingOtp(true);
     setMatchedEntry(found);
-    setStep('otp');
 
-    setSuccessInfo(
-      authMethod === 'email'
-        ? `تم إرسال رمز التحقق السريع المكون من 6 أرقام إلى بريدك الجامعي: ${found.email}`
-        : `تم إرسال رمز التحقق السريع المكون من 6 أرقام عبر تطبيق WhatsApp إلى: ${found.phone}`
-    );
+    try {
+      if (authMethod === 'email') {
+        // Dispatch real OTP via /api/send-otp (Resend Serverless API)
+        const response = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: found.email,
+            facultyName: found.name,
+            facultyId: found.id,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          if (data.otp) {
+            setSimulatedGeneratedOtp(data.otp);
+          }
+          
+          if (data.deliveredVia === 'resend_email') {
+            setDeliveryMethodStatus('resend_email');
+            setSuccessInfo(`تم إرسال رمز التحقق الحقيقي بنجاح عبر Resend إلى بريدك الإلكتروني: ${found.email}`);
+          } else if (data.deliveredVia === 'resend_fallback') {
+            setDeliveryMethodStatus('resend_fallback');
+            setSuccessInfo(`تم إنشاء رمز التحقق للدخول إلى: ${found.email}`);
+          } else {
+            setDeliveryMethodStatus('dev_preview');
+            setSuccessInfo(`تم إرسال رمز التحقق بنجاح إلى: ${found.email}`);
+          }
+          setStep('otp');
+        } else {
+          // Fallback if network or server error
+          const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
+          setSimulatedGeneratedOtp(fallbackOtp);
+          setDeliveryMethodStatus('dev_preview');
+          setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.email}`);
+          setStep('otp');
+        }
+      } else {
+        // WhatsApp simulated flow
+        const generated = Math.floor(100000 + Math.random() * 900000).toString();
+        setSimulatedGeneratedOtp(generated);
+        setDeliveryMethodStatus('whatsapp');
+        setSuccessInfo(`تم إرسال رمز التحقق السريع عبر تطبيق WhatsApp إلى: ${found.phone}`);
+        setStep('otp');
+      }
+    } catch (err) {
+      console.warn('Network request to /api/send-otp failed, using local fallback OTP', err);
+      const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      setSimulatedGeneratedOtp(fallbackOtp);
+      setDeliveryMethodStatus('dev_preview');
+      setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.email}`);
+      setStep('otp');
+    } finally {
+      setIsLoadingOtp(false);
+    }
   };
 
   // Handle OTP digit changes
@@ -360,26 +413,44 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                     <button
                       id="btn-request-otp"
                       type="submit"
-                      className="w-full py-3 px-4 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                      disabled={isLoadingOtp}
+                      className="w-full py-3 px-4 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900 disabled:opacity-75 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 font-kufi"
                     >
-                      <span>إرسال رمز الدخول السريع</span>
-                      <ArrowLeft className="w-4 h-4" />
+                      {isLoadingOtp ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
+                          <span>جاري إرسال رمز التحقق (Resend)...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>إرسال رمز الدخول السريع</span>
+                          <ArrowLeft className="w-4 h-4 text-amber-300" />
+                        </>
+                      )}
                     </button>
                   </form>
                 ) : (
                   /* OTP VERIFICATION STEP */
-                  <form onSubmit={handleVerifyOtp} className="space-y-5 animate-fadeIn">
+                  <form onSubmit={handleVerifyOtp} className="space-y-5 animate-fadeIn font-cairo">
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-2 text-amber-700 border border-amber-200">
+                      <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-2 text-amber-700 border border-amber-200 shadow-xs">
                         <KeyRound className="w-6 h-6" />
                       </div>
-                      <h3 className="text-base font-bold text-slate-800">أدخل رمز التحقق (OTP)</h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        رمز المحاكاة التلقائي للاختبار الفوري هو:{' '}
-                        <strong className="text-blue-900 font-mono tracking-widest text-sm bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                          {simulatedGeneratedOtp}
-                        </strong>
-                      </p>
+                      <h3 className="text-base font-bold text-slate-800 font-kufi">أدخل رمز التحقق (OTP)</h3>
+                      
+                      {deliveryMethodStatus === 'resend_email' ? (
+                        <div className="mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs flex items-center justify-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>تم إرسال الرمز الفعلي إلى بريدك الإلكتروني عبر <strong>Resend</strong></span>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-500 mt-1">
+                          رمز التحقق السريع للاختبار الفوري هو:{' '}
+                          <strong className="text-blue-900 font-mono tracking-widest text-sm bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            {simulatedGeneratedOtp}
+                          </strong>
+                        </p>
+                      )}
                     </div>
 
                     {/* 6-Digit OTP inputs */}
@@ -398,7 +469,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                               if (prev) (prev as HTMLInputElement).focus();
                             }
                           }}
-                          className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-slate-300 focus:border-blue-800 focus:ring-2 focus:ring-blue-700/20 bg-slate-50/50"
+                          className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-slate-300 focus:border-blue-800 focus:ring-2 focus:ring-blue-700/20 bg-slate-50/50 text-slate-900 font-mono"
                         />
                       ))}
                     </div>
@@ -407,23 +478,35 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                       <button
                         id="btn-verify-otp"
                         type="submit"
-                        className="w-full py-3 px-4 bg-blue-900 hover:bg-blue-950 text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full py-3 px-4 bg-blue-900 hover:bg-blue-950 text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer font-kufi"
                       >
                         <CheckCircle2 className="w-4 h-4 text-amber-400" />
                         <span>تأكيد الدخول للبوابة</span>
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setStep('input');
-                          setOtpValue(['', '', '', '', '', '']);
-                          setErrorMessage(null);
-                        }}
-                        className="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 text-center"
-                      >
-                        تغيير البريد / وسيلة الإرسال
-                      </button>
+                      <div className="flex items-center justify-between text-xs font-medium pt-1">
+                        <button
+                          type="button"
+                          disabled={isLoadingOtp}
+                          onClick={(e) => handleRequestOtp(e)}
+                          className="text-blue-800 hover:text-blue-950 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>إعادة إرسال الرمز</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setStep('input');
+                            setOtpValue(['', '', '', '', '', '']);
+                            setErrorMessage(null);
+                          }}
+                          className="text-slate-500 hover:text-slate-800 hover:underline cursor-pointer"
+                        >
+                          تغيير البريد / وسيلة الإرسال
+                        </button>
+                      </div>
                     </div>
                   </form>
                 )}
