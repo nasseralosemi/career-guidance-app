@@ -166,7 +166,7 @@ export default async function handler(req: any, res: any) {
 
     // If Resend API Key is configured, send the real email
     if (resend) {
-      const senderEmail = process.env.RESEND_FROM_EMAIL || 'الكلية التطبيقية <onboarding@resend.dev>';
+      const senderEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
       
       const { data, error } = await resend.emails.send({
         from: senderEmail,

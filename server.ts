@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import sendOtpHandler from './api/send-otp.js';
+import sendWhatsappHandler from './api/send-whatsapp.js';
 
 dotenv.config();
 
@@ -23,12 +24,24 @@ async function startServer() {
     res.json({ status: 'ok', time: new Date().toISOString() });
   });
 
-  // Vercel Serverless Function Proxy Route for /api/send-otp
+  // Vercel Serverless Function Proxy Route for /api/send-otp (Resend Email)
   app.all('/api/send-otp', async (req, res) => {
     try {
       await sendOtpHandler(req, res);
     } catch (error: any) {
       console.error('Error handling /api/send-otp:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: error.message || 'Internal Server Error' });
+      }
+    }
+  });
+
+  // Vercel Serverless Function Proxy Route for /api/send-whatsapp (Twilio WhatsApp)
+  app.all('/api/send-whatsapp', async (req, res) => {
+    try {
+      await sendWhatsappHandler(req, res);
+    } catch (error: any) {
+      console.error('Error handling /api/send-whatsapp:', error);
       if (!res.headersSent) {
         res.status(500).json({ success: false, error: error.message || 'Internal Server Error' });
       }

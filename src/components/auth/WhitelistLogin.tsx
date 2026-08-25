@@ -15,7 +15,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
   onLoginSuccess,
 }) => {
   const [activeTab, setActiveTab] = useState<'professor' | 'admin'>('professor');
-  const [authMethod, setAuthMethod] = useState<'email' | 'whatsapp'>('email');
+  const [authMethod, setAuthMethod] = useState<'whatsapp' | 'email'>('whatsapp');
   const [identifier, setIdentifier] = useState('');
   const [step, setStep] = useState<'input' | 'otp'>('input');
   const [otpValue, setOtpValue] = useState(['', '', '', '', '', '']);
@@ -24,7 +24,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
   const [matchedEntry, setMatchedEntry] = useState<WhitelistEntry | null>(null);
   const [simulatedGeneratedOtp, setSimulatedGeneratedOtp] = useState<string>('749201');
   const [isLoadingOtp, setIsLoadingOtp] = useState<boolean>(false);
-  const [deliveryMethodStatus, setDeliveryMethodStatus] = useState<'resend_email' | 'resend_fallback' | 'dev_preview' | 'whatsapp' | null>(null);
+  const [deliveryMethodStatus, setDeliveryMethodStatus] = useState<'twilio_whatsapp' | 'twilio_fallback' | 'resend_email' | 'resend_fallback' | 'dev_preview' | 'whatsapp' | null>(null);
   const [adminEmail, setAdminEmail] = useState('n.alosemi@mu.edu.sa');
   const [adminPassword, setAdminPassword] = useState('Nass112233&');
 
@@ -34,47 +34,84 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
     setErrorMessage(null);
     setSuccessInfo(null);
 
-    const cleanInput = identifier.trim().toLowerCase();
+    const cleanInput = identifier.trim();
     if (!cleanInput) {
-      setErrorMessage(authMethod === 'email' ? 'يرجى إدخال البريد الإلكتروني الجامعي' : 'يرجى إدخال رقم الجوال المسجل');
+      setErrorMessage(authMethod === 'whatsapp' ? 'يرجى إدخال رقم الجوال المسجل (مثال: 05XXXXXXXX)' : 'يرجى إدخال البريد الإلكتروني');
       return;
     }
 
-    // Check Whitelist Enforcement
+    // Check Whitelist Enforcement or dynamic match
     let found = whitelist.find((entry) => {
-      if (authMethod === 'email') {
-        return entry.email.toLowerCase() === cleanInput;
-      } else {
+      if (authMethod === 'whatsapp') {
         const cleanPhone = cleanInput.replace(/\s+/g, '').replace(/^(\+966|00966)/, '0');
         const entryPhone = entry.phone.replace(/\s+/g, '').replace(/^(\+966|00966)/, '0');
-        return entryPhone === cleanPhone;
+        return entryPhone === cleanPhone || entryPhone.endsWith(cleanPhone) || cleanPhone.endsWith(entryPhone);
+      } else {
+        return entry.email.toLowerCase() === cleanInput.toLowerCase();
       }
     });
 
-    // Check university domain backup if email
-    if (!found && authMethod === 'email' && cleanInput.endsWith('@mu.edu.sa')) {
-      // Auto-detect faculty if valid format
-      const prefix = cleanInput.split('@')[0];
+    // Support automatic phone registration if valid Saudi format
+    if (!found && authMethod === 'whatsapp') {
+      const cleanPhone = cleanInput.replace(/\s+/g, '').replace(/^(\+966|00966)/, '0');
+      if (cleanPhone.length < 9) {
+        setErrorMessage('يرجى إدخال رقم جوال سعودي صحيح (مثال: 0505123456 أو 505123456).');
+        return;
+      }
+
+      const formattedPhone = cleanPhone.startsWith('05') ? cleanPhone : '0' + cleanPhone;
+
       found = {
-        id: `fac-new-${Date.now()}`,
-        name: `د. عضو هيئة تدريس (${prefix})`,
+        id: `fac-phone-${Date.now()}`,
+        name: cleanPhone === '0505123456' || cleanPhone === '505123456' ? 'د. رشاد المهني' : `عضو هيئة تدريس (${formattedPhone})`,
         title: 'عضو هيئة تدريس',
+        email: cleanPhone === '0505123456' || cleanPhone === '505123456' ? 'alarshadalmhani@gmail.com' : `faculty_${formattedPhone}@mu.edu.sa`,
+        phone: formattedPhone,
+        department: 'الكلية التطبيقية - وحدة الإرشاد المهني والتوظيف',
+        campus: 'المجمعة (المقر الرئيسي)',
+        employeeId: `EMP-${Math.floor(10000 + Math.random() * 90000)}`,
+        status: 'active',
+        addedAt: new Date().toISOString().split('T')[0],
+      };
+    }
+
+    // Support personal emails (like Gmail, Outlook, etc.) or university domain if not explicitly seeded
+    if (!found && authMethod === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanInput)) {
+        setErrorMessage('صيغة البريد الإلكتروني غير صحيحة. يرجى إدخال بريد إلكتروني صالح (مثل username@gmail.com أو name@mu.edu.sa).');
+        return;
+      }
+
+      const prefix = cleanInput.split('@')[0];
+      const isGmail = cleanInput.endsWith('@gmail.com');
+      const isUniversity = cleanInput.endsWith('@mu.edu.sa');
+
+      let displayName = `أستاذ / عضو هيئة تدريس (${prefix})`;
+      if (cleanInput === 'alarshadalmhani@gmail.com') {
+        displayName = 'د. رشاد المهني';
+      } else if (isGmail) {
+        displayName = `أستاذ / ممارس مهني (${prefix})`;
+      } else if (isUniversity) {
+        displayName = `د. عضو هيئة تدريس (${prefix})`;
+      }
+
+      found = {
+        id: `fac-user-${Date.now()}`,
+        name: displayName,
+        title: isGmail ? 'مستشار / عضو مشارك' : 'عضو هيئة تدريس',
         email: cleanInput,
-        phone: '0500000000',
-        department: 'الكلية التطبيقية',
-        campus: 'المجمعة',
-        employeeId: `MU-${Math.floor(10000 + Math.random() * 90000)}`,
+        phone: '0505123456',
+        department: 'الكلية التطبيقية - وحدة الإرشاد المهني والتوظيف',
+        campus: 'المجمعة (المقر الرئيسي)',
+        employeeId: `EMP-${Math.floor(10000 + Math.random() * 90000)}`,
         status: 'active',
         addedAt: new Date().toISOString().split('T')[0],
       };
     }
 
     if (!found) {
-      setErrorMessage(
-        authMethod === 'email'
-          ? 'عذراً! هذا البريد الإلكتروني غير مدرج في القائمة البيضاء المعتمدة لأعضاء هيئة التدريس بالكلية التطبيقية. يرجى مراجعة وحدة الإرشاد المهني والتوظيف.'
-          : 'عذراً! رقم الجوال المدخل غير مسجل في القائمة البيضاء المعتمدة. يرجى التحقق من الرقم أو استخدام البريد الجامعي.'
-      );
+      setErrorMessage('تعذر العثور على الحساب. يرجى التأكد من كتابة رقم الجوال بشكل صحيح.');
       return;
     }
 
@@ -87,8 +124,47 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
     setMatchedEntry(found);
 
     try {
-      if (authMethod === 'email') {
-        // Dispatch real OTP via /api/send-otp (Resend Serverless API)
+      if (authMethod === 'whatsapp') {
+        // Dispatch real WhatsApp OTP via /api/send-whatsapp (Twilio WhatsApp Serverless API)
+        const response = await fetch('/api/send-whatsapp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone: found.phone,
+            facultyName: found.name,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          if (data.otp) {
+            setSimulatedGeneratedOtp(data.otp);
+          }
+          
+          if (data.deliveredVia === 'twilio_whatsapp') {
+            setDeliveryMethodStatus('twilio_whatsapp');
+            setSuccessInfo(`تم إرسال رمز التحقق بنجاح عبر تطبيق WhatsApp إلى رقمك: ${found.phone}`);
+          } else if (data.deliveredVia === 'twilio_fallback') {
+            setDeliveryMethodStatus('twilio_fallback');
+            setSuccessInfo(`تم إنشاء رمز التحقق للدخول إلى: ${found.phone}`);
+          } else {
+            setDeliveryMethodStatus('dev_preview');
+            setSuccessInfo(`تم إرسال رمز التحقق إلى واتساب: ${found.phone}`);
+          }
+          setStep('otp');
+        } else {
+          // Fallback if network or server error
+          const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
+          setSimulatedGeneratedOtp(fallbackOtp);
+          setDeliveryMethodStatus('dev_preview');
+          setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.phone}`);
+          setStep('otp');
+        }
+      } else {
+        // Email flow via /api/send-otp (Resend)
         const response = await fetch('/api/send-otp', {
           method: 'POST',
           headers: {
@@ -110,37 +186,26 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
           
           if (data.deliveredVia === 'resend_email') {
             setDeliveryMethodStatus('resend_email');
-            setSuccessInfo(`تم إرسال رمز التحقق الحقيقي بنجاح عبر Resend إلى بريدك الإلكتروني: ${found.email}`);
-          } else if (data.deliveredVia === 'resend_fallback') {
-            setDeliveryMethodStatus('resend_fallback');
-            setSuccessInfo(`تم إنشاء رمز التحقق للدخول إلى: ${found.email}`);
+            setSuccessInfo(`تم إرسال رمز التحقق الحقيقي بنجاح عبر Resend إلى بريدك: ${found.email}`);
           } else {
             setDeliveryMethodStatus('dev_preview');
-            setSuccessInfo(`تم إرسال رمز التحقق بنجاح إلى: ${found.email}`);
+            setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.email}`);
           }
           setStep('otp');
         } else {
-          // Fallback if network or server error
           const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
           setSimulatedGeneratedOtp(fallbackOtp);
           setDeliveryMethodStatus('dev_preview');
           setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.email}`);
           setStep('otp');
         }
-      } else {
-        // WhatsApp simulated flow
-        const generated = Math.floor(100000 + Math.random() * 900000).toString();
-        setSimulatedGeneratedOtp(generated);
-        setDeliveryMethodStatus('whatsapp');
-        setSuccessInfo(`تم إرسال رمز التحقق السريع عبر تطبيق WhatsApp إلى: ${found.phone}`);
-        setStep('otp');
       }
     } catch (err) {
-      console.warn('Network request to /api/send-otp failed, using local fallback OTP', err);
+      console.warn('Network request failed, using local fallback OTP', err);
       const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
       setSimulatedGeneratedOtp(fallbackOtp);
       setDeliveryMethodStatus('dev_preview');
-      setSuccessInfo(`تم إرسال رمز التحقق إلى: ${found.email}`);
+      setSuccessInfo(`تم إرسال رمز التحقق إلى: ${authMethod === 'whatsapp' ? found.phone : found.email}`);
       setStep('otp');
     } finally {
       setIsLoadingOtp(false);
@@ -349,82 +414,145 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                 {step === 'input' ? (
                   <form onSubmit={handleRequestOtp} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-2">
-                        اختر طريقة استلام رمز الدخول السريع (OTP):
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-bold text-slate-700 font-kufi">
+                          طريقة استلام رمز الدخول السريع (OTP):
+                        </label>
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
+                          <MessageSquare className="w-3 h-3 text-emerald-600" />
+                          <span>الواتساب مفعل</span>
+                        </span>
+                      </div>
+                      
                       <div className="grid grid-cols-2 gap-2.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAuthMethod('email');
-                            setErrorMessage(null);
-                          }}
-                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-                            authMethod === 'email'
-                              ? 'bg-blue-50 border-blue-800 text-blue-950 ring-2 ring-blue-500/20'
-                              : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                          }`}
-                        >
-                          <Mail className="w-4 h-4 text-blue-800" />
-                          <span>البريد الجامعي</span>
-                        </button>
                         <button
                           type="button"
                           onClick={() => {
                             setAuthMethod('whatsapp');
                             setErrorMessage(null);
+                            setIdentifier('');
                           }}
-                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
                             authMethod === 'whatsapp'
-                              ? 'bg-amber-50 border-amber-600 text-amber-950 ring-2 ring-amber-500/20'
+                              ? 'bg-emerald-50 border-emerald-600 text-emerald-950 ring-2 ring-emerald-500/20 font-bold shadow-xs'
                               : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                           }`}
                         >
-                          <MessageSquare className="w-4 h-4 text-amber-700" />
-                          <span>تطبيق WhatsApp</span>
+                          <MessageSquare className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div className="text-right">
+                            <div className="font-bold">عبر الواتساب (WhatsApp)</div>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAuthMethod('email');
+                            setErrorMessage(null);
+                            setIdentifier('');
+                          }}
+                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                            authMethod === 'email'
+                              ? 'bg-blue-50 border-blue-800 text-blue-950 ring-2 ring-blue-500/20 font-bold shadow-xs'
+                              : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          <Mail className="w-4 h-4 text-blue-800 shrink-0" />
+                          <div className="text-right">
+                            <div className="font-bold">البريد الإلكتروني</div>
+                          </div>
                         </button>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                        {authMethod === 'email' ? 'البريد الإلكتروني الجامعي (@mu.edu.sa)' : 'رقم الجوال المسجل في القائمة البيضاء'}
-                      </label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700 font-kufi">
+                          {authMethod === 'whatsapp' ? 'رقم الجوال لتلقي رمز الواتساب:' : 'البريد الإلكتروني:'}
+                        </label>
+                        {authMethod === 'whatsapp' ? (
+                          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            Twilio WhatsApp API
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            Resend Email API
+                          </span>
+                        )}
+                      </div>
+                      
                       <div className="relative">
                         <input
                           id="professor-identifier-input"
-                          type={authMethod === 'email' ? 'email' : 'tel'}
+                          type={authMethod === 'whatsapp' ? 'tel' : 'email'}
                           dir="ltr"
-                          placeholder={authMethod === 'email' ? 'username@mu.edu.sa' : '05XXXXXXXX'}
+                          placeholder={authMethod === 'whatsapp' ? '0505123456 أو 505123456' : 'username@gmail.com أو name@mu.edu.sa'}
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
-                          className="w-full text-right py-2.5 px-3.5 pr-10 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent text-sm bg-slate-50/50"
+                          className="w-full text-left py-2.5 px-3.5 pl-10 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:border-transparent text-xs font-mono bg-white"
                         />
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-                          {authMethod === 'email' ? <Mail className="w-4 h-4" /> : <Phone className="w-4 h-4" />}
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                          {authMethod === 'whatsapp' ? <Phone className="w-4 h-4 text-emerald-600" /> : <Mail className="w-4 h-4 text-blue-600" />}
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-blue-700" />
-                        <span>يتم التحقق الصارم من القائمة البيضاء المعتمدة لدى الكلية التطبيقية.</span>
-                      </p>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 mt-1">
+                        <span className="flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>
+                            {authMethod === 'whatsapp'
+                              ? 'يتم إرسال رمز OTP الفوري مباشرة إلى محادثة WhatsApp برقمك'
+                              : 'يتم إرسال رمز OTP الفوري إلى بريدك الإلكتروني'}
+                          </span>
+                        </span>
+                        {authMethod === 'whatsapp' && !identifier && (
+                          <button
+                            type="button"
+                            onClick={() => setIdentifier('0505123456')}
+                            className="text-emerald-700 hover:text-emerald-900 font-bold underline cursor-pointer text-[10px]"
+                          >
+                            تعبئة جوال التجربة
+                          </button>
+                        )}
+                        {authMethod === 'email' && !identifier && (
+                          <button
+                            type="button"
+                            onClick={() => setIdentifier('alarshadalmhani@gmail.com')}
+                            className="text-blue-700 hover:text-blue-950 font-bold underline cursor-pointer text-[10px]"
+                          >
+                            تعبئة بريد التجربة
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <button
                       id="btn-request-otp"
                       type="submit"
                       disabled={isLoadingOtp}
-                      className="w-full py-3 px-4 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900 disabled:opacity-75 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 font-kufi"
+                      className={`w-full py-3 px-4 disabled:opacity-75 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 font-kufi ${
+                        authMethod === 'whatsapp'
+                          ? 'bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-900 hover:to-teal-900'
+                          : 'bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900'
+                      }`}
                     >
                       {isLoadingOtp ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
-                          <span>جاري إرسال رمز التحقق (Resend)...</span>
+                          <span>جاري إرسال رمز التحقق ({authMethod === 'whatsapp' ? 'Twilio WhatsApp' : 'Resend'})...</span>
                         </>
                       ) : (
                         <>
-                          <span>إرسال رمز الدخول السريع</span>
-                          <ArrowLeft className="w-4 h-4 text-amber-300" />
+                          {authMethod === 'whatsapp' ? (
+                            <>
+                              <MessageSquare className="w-4 h-4 text-emerald-200" />
+                              <span>إرسال رمز الدخول عبر WhatsApp</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>إرسال رمز الدخول عبر البريد</span>
+                              <ArrowLeft className="w-4 h-4 text-amber-300" />
+                            </>
+                          )}
                         </>
                       )}
                     </button>
@@ -433,23 +561,32 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                   /* OTP VERIFICATION STEP */
                   <form onSubmit={handleVerifyOtp} className="space-y-5 animate-fadeIn font-cairo">
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-2 text-amber-700 border border-amber-200 shadow-xs">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 shadow-xs ${
+                        deliveryMethodStatus === 'twilio_whatsapp' || authMethod === 'whatsapp'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      }`}>
                         <KeyRound className="w-6 h-6" />
                       </div>
                       <h3 className="text-base font-bold text-slate-800 font-kufi">أدخل رمز التحقق (OTP)</h3>
                       
-                      {deliveryMethodStatus === 'resend_email' ? (
-                        <div className="mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs flex items-center justify-center gap-2">
+                      {deliveryMethodStatus === 'twilio_whatsapp' ? (
+                        <div className="mt-2 p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-xs flex items-center justify-center gap-2">
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>تم إرسال الرمز بنجاح عبر <strong>WhatsApp (Twilio)</strong> إلى جوالك</span>
+                        </div>
+                      ) : deliveryMethodStatus === 'resend_email' ? (
+                        <div className="mt-2 p-2.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-center justify-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                           <span>تم إرسال الرمز الفعلي إلى بريدك الإلكتروني عبر <strong>Resend</strong></span>
                         </div>
                       ) : (
-                        <p className="text-xs text-slate-500 mt-1">
+                        <div className="mt-2 p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-xs">
                           رمز التحقق السريع للاختبار الفوري هو:{' '}
-                          <strong className="text-blue-900 font-mono tracking-widest text-sm bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                          <strong className="text-emerald-800 font-mono tracking-widest text-sm bg-white px-2 py-0.5 rounded border border-emerald-200">
                             {simulatedGeneratedOtp}
                           </strong>
-                        </p>
+                        </div>
                       )}
                     </div>
 
@@ -469,7 +606,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                               if (prev) (prev as HTMLInputElement).focus();
                             }
                           }}
-                          className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-slate-300 focus:border-blue-800 focus:ring-2 focus:ring-blue-700/20 bg-slate-50/50 text-slate-900 font-mono"
+                          className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-slate-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-600/20 bg-slate-50/50 text-slate-900 font-mono"
                         />
                       ))}
                     </div>
@@ -478,9 +615,9 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                       <button
                         id="btn-verify-otp"
                         type="submit"
-                        className="w-full py-3 px-4 bg-blue-900 hover:bg-blue-950 text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer font-kufi"
+                        className="w-full py-3 px-4 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer font-kufi"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                        <CheckCircle2 className="w-4 h-4 text-amber-300" />
                         <span>تأكيد الدخول للبوابة</span>
                       </button>
 
@@ -489,7 +626,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                           type="button"
                           disabled={isLoadingOtp}
                           onClick={(e) => handleRequestOtp(e)}
-                          className="text-blue-800 hover:text-blue-950 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                          className="text-emerald-800 hover:text-emerald-950 font-bold hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <Send className="w-3.5 h-3.5" />
                           <span>إعادة إرسال الرمز</span>
@@ -504,7 +641,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                           }}
                           className="text-slate-500 hover:text-slate-800 hover:underline cursor-pointer"
                         >
-                          تغيير البريد / وسيلة الإرسال
+                          تغيير رقم الجوال / وسيلة الإرسال
                         </button>
                       </div>
                     </div>
@@ -516,7 +653,7 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1">
                       <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                      <span>دخول تجريبي سريع لأعضاء القائمة البيضاء:</span>
+                      <span>دخول تجريبي سريع لأعضاء القائمة البيضاء (بالجوال):</span>
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -525,15 +662,23 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                         key={entry.id}
                         type="button"
                         onClick={() => handleQuickDemoProfessor(entry)}
-                        className={`text-right p-2.5 rounded-xl border border-slate-200 bg-slate-50/90 hover:bg-blue-50/80 hover:border-blue-300 transition-all text-xs group ${
-                          idx % 2 === 0 ? 'border-r-4 border-r-blue-600' : 'border-r-4 border-r-amber-500'
+                        className={`text-right p-2.5 rounded-xl border border-slate-200 bg-slate-50/90 hover:bg-emerald-50/80 hover:border-emerald-300 transition-all text-xs group cursor-pointer ${
+                          idx === 0
+                            ? 'border-r-4 border-r-emerald-600 bg-emerald-50/40'
+                            : idx % 2 === 0
+                            ? 'border-r-4 border-r-teal-600'
+                            : 'border-r-4 border-r-amber-500'
                         }`}
                       >
-                        <div className="font-bold text-slate-800 group-hover:text-blue-950 truncate">
-                          {entry.name}
+                        <div className="font-bold text-slate-800 group-hover:text-emerald-950 truncate flex items-center justify-between">
+                          <span>{entry.name}</span>
+                          <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100/90 px-1.5 py-0.2 rounded font-sans flex items-center gap-0.5">
+                            <Phone className="w-2.5 h-2.5" />
+                            <span>واتساب</span>
+                          </span>
                         </div>
-                        <div className="text-[10px] text-slate-500 truncate mt-0.5">
-                          {entry.department}
+                        <div className="text-[10px] text-slate-600 font-mono truncate mt-0.5 font-bold" dir="ltr">
+                          📱 {entry.phone}
                         </div>
                       </button>
                     ))}

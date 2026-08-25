@@ -15,6 +15,18 @@ export const INITIAL_DEAN_CONFIG: DeanOfficialConfig = {
 
 export const INITIAL_WHITELIST: WhitelistEntry[] = [
   {
+    id: "fac-user",
+    name: "د. رشاد المهني",
+    title: "مستشار التوجيه المهني وعضو هيئة التدريس",
+    email: "alarshadalmhani@gmail.com",
+    phone: "0505123456",
+    department: "الكلية التطبيقية - وحدة الإرشاد المهني والتوظيف",
+    campus: "المجمعة (المقر الرئيسي)",
+    employeeId: "MU-48899",
+    status: "active",
+    addedAt: "2026-01-01",
+  },
+  {
     id: "fac-1",
     name: "د. عبد الرحمن بن فهد السويكت",
     title: "أستاذ مشارك",
@@ -89,6 +101,20 @@ export const INITIAL_WHITELIST: WhitelistEntry[] = [
 ];
 
 export const INITIAL_FACULTY: FacultyMember[] = [
+  {
+    id: "fac-user",
+    name: "د. رشاد المهني",
+    title: "مستشار التوجيه المهني وعضو هيئة التدريس",
+    email: "alarshadalmhani@gmail.com",
+    phone: "0505123456",
+    college: "الكلية التطبيقية",
+    department: "الكلية التطبيقية - وحدة الإرشاد المهني والتوظيف",
+    campus: "المجمعة (المقر الرئيسي)",
+    employeeId: "MU-48899",
+    isWhitelisted: true,
+    completedWorkshopsCount: 5,
+    totalStudentsReached: 185,
+  },
   {
     id: "fac-1",
     name: "د. عبد الرحمن بن فهد السويكت",
