@@ -127,15 +127,6 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
             </div>
 
             <button
-              onClick={() => onOpenBookingModal()}
-              className="px-3.5 py-2 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <Plus className="w-4 h-4 text-amber-300" />
-              <span className="hidden sm:inline">طلب ورشة لطلابي</span>
-              <span className="sm:hidden">طلب ورشة</span>
-            </button>
-
-            <button
               onClick={onLogout}
               title="تسجيل الخروج"
               className="p-2 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
@@ -376,21 +367,11 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
         {activeTab === 'my_sessions' && (
           <div className="space-y-6">
             
-            <div className="flex items-center justify-between glass-card p-4 rounded-2xl border border-slate-200 shadow-2xs">
-              <div>
-                <h2 className="text-base font-bold text-slate-900">سجل جلساتي وورش العمل المجدولة</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  تأكيد التنفيذ بضغطة زر واحدة بعد الانتهاء من إلقاء الورشة لإصدار شهادة الشكر فوراً.
-                </p>
-              </div>
-
-              <button
-                onClick={() => onOpenBookingModal()}
-                className="px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <Plus className="w-4 h-4 text-amber-300" />
-                <span>حجز ورشة جديدة</span>
-              </button>
+            <div className="glass-card p-4 rounded-2xl border border-slate-200 shadow-2xs">
+              <h2 className="text-base font-bold text-slate-900">سجل جلساتي وورش العمل المجدولة</h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                تأكيد التنفيذ بضغطة زر واحدة بعد الانتهاء من إلقاء الورشة لإصدار شهادة الشكر فوراً. (يتم حجز الورش الجديدة حصراً عبر تبويب دليل الحقائب التدريبية المعتمدة).
+              </p>
             </div>
 
             {mySessions.length === 0 ? (
@@ -400,13 +381,14 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </div>
                 <h3 className="text-base font-bold text-slate-800">لا توجد ورش مسجلة باسمك حالياً</h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-                  اختر من دليل الحقائب المعتمدة وحدد التاريخ الأنسب لك لتبدأ جلستك الأولى مع طلابك.
+                  لحجز ورشة جديدة، تفضل بزيارة دليل الحقائب المعتمدة لاختيار الحقيبة المناسبة وتحديد موعد جلستك.
                 </p>
                 <button
-                  onClick={() => onOpenBookingModal()}
-                  className="px-4 py-2 bg-blue-900 text-white rounded-xl text-xs font-bold cursor-pointer"
+                  onClick={() => setActiveTab('courses')}
+                  className="px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs font-bold cursor-pointer transition-all inline-flex items-center gap-2 shadow-xs"
                 >
-                  جدولة ورشة عمل الآن
+                  <BookOpen className="w-4 h-4 text-amber-300" />
+                  <span>الانتقال لدليل الحقائب التدريبية لحجز ورشة</span>
                 </button>
               </div>
             ) : (
@@ -500,8 +482,8 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
                           {/* Secondary Action */}
                           <div className="flex items-center gap-2 text-xs">
-                            <span className="text-slate-400 text-[11px]">
-                              {session.reminderSentWhatsApp ? '✓ تم إرسال تذكير WhatsApp' : ''}
+                            <span className="text-blue-900/80 font-medium text-[11px]">
+                              ✓ تم إرسال التأكيد للبريد الجامعي
                             </span>
                           </div>
 

@@ -388,11 +388,11 @@ export const InteractiveBookingCalendar: React.FC<BookingModalProps> = ({
                 />
               </div>
 
-              {/* Automated WhatsApp / Email Reminder Note */}
+              {/* Automated Email Reminder Note */}
               <div className="p-3 bg-blue-50/80 border border-blue-200 rounded-xl text-blue-950 text-xs flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>
-                  فور تأكيد الحجز، سيتم إرسال إشعار تذكيري فوري عبر تطبيق <strong>WhatsApp</strong> وبريدك الجامعي متضمناً روابط تنزيل الحقيبة التدريبية.
+                  فور تأكيد الحجز، سيتم إرسال إشعار تأكيد وتذكير فوري إلى <strong>بريدك الإلكتروني الجامعي</strong> متضمناً تفاصيل الجلسة وروابط تنزيل الحقيبة التدريبية.
                 </span>
               </div>
 

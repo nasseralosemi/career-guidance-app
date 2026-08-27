@@ -181,7 +181,7 @@ export default function App() {
 
     setSessions((prev) => [newSession, ...prev]);
     setIsBookingModalOpen(false);
-    alert('تم حجز ورشة العمل بنجاح! تم إرسال إشعار تذكيري عبر WhatsApp ورسائل البريد الجامعي.');
+    alert('تم حجز ورشة العمل بنجاح! تم إرسال إشعار التأكيد وتفاصيل الجلسة إلى بريدك الإلكتروني الجامعي.');
   };
 
   // Session Completion Handler

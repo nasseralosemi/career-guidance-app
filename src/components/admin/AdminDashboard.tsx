@@ -472,9 +472,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div className="space-y-2.5 text-xs text-slate-600 font-cairo">
                     <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
-                      <div className="font-bold text-blue-950 font-kufi">تذكير WhatsApp الآلي</div>
+                      <div className="font-bold text-blue-950 font-kufi">إشعارات البريد الجامعي الآلية</div>
                       <div className="text-[11px] text-blue-800/90 mt-0.5">
-                        يتم إرسال تذكير فوري لأعضاء هيئة التدريس قبل موعد الورشة بـ 24 ساعة مع رابط الحقيبة.
+                        يتم إرسال تذكير فوري لأعضاء هيئة التدريس قبل موعد الورشة مع روابط الحقيبة وتفاصيل الجلسة.
                       </div>
                     </div>
 
@@ -637,10 +637,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               )}
                               <button
                                 onClick={() => {
-                                  alert(`تم إرسال تذكير فوري عبر WhatsApp ورسالة SMS للأستاذ: ${session.professorName}`);
+                                  alert(`تم إرسال إشعار تذكيري للبريد الجامعي للأستاذ: ${session.professorName}`);
                                 }}
                                 className="p-1 text-blue-700 hover:bg-blue-50 rounded cursor-pointer"
-                                title="إرسال تذكير WhatsApp مباشر"
+                                title="إرسال إشعار تذكيري للبريد الجامعي"
                               >
                                 <MessageSquare className="w-4 h-4" />
                               </button>
@@ -933,7 +933,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="bg-gradient-to-r from-blue-950 to-blue-900 text-white p-5">
               <h3 className="text-base font-bold font-kufi">إضافة عضو هيئة تدريس إلى القائمة البيضاء المعتمدة</h3>
               <p className="text-xs text-blue-100 font-cairo">
-                يتيح للأستاذ الدخول الفوري للبوابة عبر البريد الجامعي أو OTP تطبيق WhatsApp
+                يتيح للأستاذ الدخول الفوري للبوابة عبر البريد الجامعي والرمز السري (Passcode)
               </p>
             </div>
 
@@ -981,7 +981,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1 font-kufi">رقم الجوال (لرسائل WhatsApp):</label>
+                  <label className="block font-bold text-slate-700 mb-1 font-kufi">رقم الجوال للتواصل:</label>
                   <input
                     type="tel"
                     required
