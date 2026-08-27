@@ -15,6 +15,19 @@ export const INITIAL_DEAN_CONFIG: DeanOfficialConfig = {
 
 export const INITIAL_WHITELIST: WhitelistEntry[] = [
   {
+    id: "fac-demo",
+    name: "د. عضو هيئة التدريس (تجريبي)",
+    title: "أستاذ مشارك",
+    email: "faculty@mu.edu.sa",
+    phone: "0501234567",
+    department: "الكلية التطبيقية - علوم الحاسب والتقنية",
+    campus: "المجمعة (المقر الرئيسي)",
+    employeeId: "MU-123456",
+    passcode: "123456",
+    status: "active",
+    addedAt: "2026-01-01",
+  },
+  {
     id: "fac-user",
     name: "د. رشاد المهني",
     title: "مستشار التوجيه المهني وعضو هيئة التدريس",
@@ -108,6 +121,20 @@ export const INITIAL_WHITELIST: WhitelistEntry[] = [
 ];
 
 export const INITIAL_FACULTY: FacultyMember[] = [
+  {
+    id: "fac-demo",
+    name: "د. عضو هيئة التدريس (تجريبي)",
+    title: "أستاذ مشارك",
+    email: "faculty@mu.edu.sa",
+    phone: "0501234567",
+    college: "الكلية التطبيقية",
+    department: "الكلية التطبيقية - علوم الحاسب والتقنية",
+    campus: "المجمعة (المقر الرئيسي)",
+    employeeId: "MU-123456",
+    isWhitelisted: true,
+    completedWorkshopsCount: 4,
+    totalStudentsReached: 156,
+  },
   {
     id: "fac-user",
     name: "د. رشاد المهني",

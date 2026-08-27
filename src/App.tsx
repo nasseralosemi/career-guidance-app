@@ -31,7 +31,7 @@ export default function App() {
     if (saved) {
       try {
         const parsed: WhitelistEntry[] = JSON.parse(saved);
-        return parsed.map((item) => {
+        const mapped = parsed.map((item) => {
           if (!item.passcode) {
             const match = INITIAL_WHITELIST.find((w) => w.email.toLowerCase() === item.email.toLowerCase());
             return {
@@ -41,6 +41,16 @@ export default function App() {
           }
           return item;
         });
+
+        // Ensure new initial entries (like faculty@mu.edu.sa) are merged if missing
+        INITIAL_WHITELIST.forEach((initEntry) => {
+          const exists = mapped.some((m) => m.email.toLowerCase() === initEntry.email.toLowerCase());
+          if (!exists) {
+            mapped.unshift(initEntry);
+          }
+        });
+
+        return mapped;
       } catch (e) {
         return INITIAL_WHITELIST;
       }

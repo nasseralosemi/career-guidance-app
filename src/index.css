@@ -19,12 +19,16 @@
 }
 
 /* Geometric Balance Colors & Utility Classes */
-.university-blue {
-  background-color: #1E3A8A;
+.university-green {
+  background-color: #1b4329;
 }
 
 .university-gold {
-  background-color: #B45309;
+  background-color: #a4874b;
+}
+
+.university-blue {
+  background-color: #1b4329;
 }
 
 .glass-card {
@@ -34,28 +38,28 @@
 }
 
 .dark-glass-card {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 40, 24, 0.88);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Geometric subtle grid & watermark */
+/* Geometric subtle grid & watermark inspired by Majmaah University background */
 .bg-geometric-grid {
-  background-color: #f8fafc;
+  background-color: #f7faf8;
   background-image: 
-    linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(to right, rgba(27, 67, 41, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(27, 67, 41, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .bg-geometric-subtle {
-  background-image: radial-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px);
-  background-size: 16px 16px;
+  background-image: radial-gradient(rgba(27, 67, 41, 0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
 }
 
 .bg-arabesque-pattern {
-  background-color: #f8fafc;
-  background-image: radial-gradient(#1e3a8a 0.6px, transparent 0.6px), radial-gradient(#b45309 0.6px, #f8fafc 0.6px);
+  background-color: #f7faf8;
+  background-image: radial-gradient(#1b4329 0.6px, transparent 0.6px), radial-gradient(#a4874b 0.6px, #f7faf8 0.6px);
   background-size: 28px 28px;
   background-position: 0 0, 14px 14px;
 }

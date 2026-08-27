@@ -231,10 +231,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={handleExportCSV}
-              className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 bg-[#f0f7f2] hover:bg-[#e2f0e7] text-[#1b4329] border border-[#c8e2d1] rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               title="تصدير تقرير إكسل متكامل"
             >
-              <FileSpreadsheet className="w-4 h-4 text-blue-700" />
+              <FileSpreadsheet className="w-4 h-4 text-[#1b4329]" />
               <span className="hidden sm:inline">تصدير التقرير (Excel/CSV)</span>
               <span className="sm:hidden">تصدير</span>
             </button>
@@ -258,7 +258,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               onClick={() => setAdminTab('analytics')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 adminTab === 'analytics'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -270,14 +270,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               onClick={() => setAdminTab('sessions')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer relative ${
                 adminTab === 'sessions'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
               <CalendarIcon className="w-4 h-4" />
               <span>متابعة الورش الحية ({sessions.length})</span>
               {scheduledSessions.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span className="w-2 h-2 rounded-full bg-[#a4874b]"></span>
               )}
             </button>
 
@@ -285,7 +285,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               onClick={() => setAdminTab('whitelist')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 adminTab === 'whitelist'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -297,7 +297,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               onClick={() => setAdminTab('courses')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 adminTab === 'courses'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -309,7 +309,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               onClick={() => setAdminTab('settings')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 adminTab === 'settings'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -383,10 +383,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               {/* Card 3: Active Faculty */}
-              <div className="glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs border-r-4 border-r-blue-500">
+              <div className="glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs border-r-4 border-r-[#1b4329]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500">أعضاء هيئة التدريس الفاعلون</span>
-                  <div className="p-2 rounded-xl bg-blue-50 text-blue-800">
+                  <div className="p-2 rounded-xl bg-[#f0f7f2] text-[#1b4329]">
                     <UserCheck className="w-5 h-5" />
                   </div>
                 </div>
@@ -399,21 +399,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 mt-3 flex items-center gap-1 font-cairo">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#8f743c]" />
                   <span>نسبة المشاركة الأكاديمية: {Math.round((activeFacultyCount / (whitelist.length || 1)) * 100)}%</span>
                 </div>
               </div>
 
               {/* Card 4: Official Certificates */}
-              <div className="glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs border-r-4 border-r-amber-400">
+              <div className="glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs border-r-4 border-r-[#a4874b]">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500">شهادات الشكر المعتمدة</span>
-                  <div className="p-2 rounded-xl bg-purple-50 text-purple-800">
+                  <div className="p-2 rounded-xl bg-[#faf6ee] text-[#785e2b]">
                     <Award className="w-5 h-5" />
                   </div>
                 </div>
                 <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-bold font-kufi text-amber-900">
+                  <span className="text-2xl sm:text-3xl font-bold font-kufi text-[#143520]">
                     {totalCertificatesIssued}
                   </span>
                   <span className="text-xs text-slate-500 font-medium">
@@ -421,7 +421,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 mt-3 flex items-center gap-1 font-cairo">
-                  <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#1b4329]" />
                   <span>اعتماد رقمي موثق 100%</span>
                 </div>
               </div>
@@ -435,7 +435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="lg:col-span-2 glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-blue-700" />
+                    <TrendingUp className="w-4 h-4 text-[#1b4329]" />
                     <span>معدلات إنجاز الورش حسب الأقسام الأكاديمية بالكلية التطبيقية</span>
                   </h3>
                 </div>
@@ -446,13 +446,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-bold text-slate-800">{item.dept}</span>
                         <span className="text-slate-500">
-                          {item.completed} ورش منفذة • <strong className="text-blue-900">{item.students} طالب</strong>
+                          {item.completed} ورش منفذة • <strong className="text-[#1b4329]">{item.students} طالب</strong>
                         </span>
                       </div>
                       <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            idx === 0 ? 'bg-blue-900' : idx === 1 ? 'bg-amber-600' : 'bg-indigo-700'
+                            idx === 0 ? 'bg-[#1b4329]' : idx === 1 ? 'bg-[#a4874b]' : 'bg-[#2d6a4f]'
                           }`}
                           style={{ width: `${Math.min(100, Math.max(10, (item.students / 150) * 100))}%` }}
                         ></div>
@@ -466,21 +466,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="glass-card rounded-2xl p-5 border border-slate-200 shadow-2xs flex flex-col justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <Sparkles className="w-4 h-4 text-[#8f743c]" />
                     <span>التكامل الذكي والإشعارات</span>
                   </h3>
 
                   <div className="space-y-2.5 text-xs text-slate-600 font-cairo">
-                    <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
-                      <div className="font-bold text-blue-950 font-kufi">إشعارات البريد الجامعي الآلية</div>
-                      <div className="text-[11px] text-blue-800/90 mt-0.5">
+                    <div className="p-3 rounded-xl bg-[#f0f7f2] border border-[#c8e2d1]">
+                      <div className="font-bold text-[#143520] font-kufi">إشعارات البريد الجامعي الآلية</div>
+                      <div className="text-[11px] text-[#1b4329]/90 mt-0.5">
                         يتم إرسال تذكير فوري لأعضاء هيئة التدريس قبل موعد الورشة مع روابط الحقيبة وتفاصيل الجلسة.
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
-                      <div className="font-bold text-amber-950 font-kufi">التحقق من القائمة البيضاء والرمز السري</div>
-                      <div className="text-[11px] text-amber-800/90 mt-0.5">
+                    <div className="p-3 rounded-xl bg-[#faf6ee] border border-[#a4874b]/30">
+                      <div className="font-bold text-[#785e2b] font-kufi">التحقق من القائمة البيضاء والرمز السري</div>
+                      <div className="text-[11px] text-[#8f743c] mt-0.5">
                         مفعل وصارم - التحقق المباشر من مطابقة البريد الجامعي والرمز السري (Passcode) مع القائمة البيضاء المعتمدة.
                       </div>
                     </div>
@@ -490,9 +490,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="pt-4 border-t border-slate-100 mt-4">
                   <button
                     onClick={() => setAdminTab('whitelist')}
-                    className="w-full py-2.5 px-4 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-2.5 px-4 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Plus className="w-4 h-4 text-amber-300" />
+                    <Plus className="w-4 h-4 text-[#e5d4a6]" />
                     <span>إضافة عضو هيئة تدريس للقائمة البيضاء</span>
                   </button>
                 </div>

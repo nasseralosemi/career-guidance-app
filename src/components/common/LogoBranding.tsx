@@ -50,7 +50,7 @@ export const LogoBranding: React.FC<LogoBrandingProps> = ({
           <div className="flex items-center gap-2">
             <span
               className={`font-extrabold font-kufi tracking-tight ${sizeMap[size].main} ${
-                isLight ? 'text-white' : 'text-blue-950'
+                isLight ? 'text-white' : 'text-[#1b4329]'
               }`}
             >
               الكلية التطبيقية
@@ -59,7 +59,7 @@ export const LogoBranding: React.FC<LogoBrandingProps> = ({
           {showSubtitle && (
             <span
               className={`font-medium font-cairo mt-0.5 ${sizeMap[size].sub} ${
-                isLight ? 'text-amber-300' : 'text-amber-800'
+                isLight ? 'text-[#e5d4a6]' : 'text-[#8f743c]'
               }`}
             >
               وحدة الإرشاد المهني والتوظيف
@@ -70,21 +70,21 @@ export const LogoBranding: React.FC<LogoBrandingProps> = ({
         <div className="flex items-center flex-wrap text-right leading-none gap-y-1">
           <span
             className={`font-extrabold font-kufi tracking-tight ${sizeMap[size].main} ${
-              isLight ? 'text-white' : 'text-blue-950'
+              isLight ? 'text-white' : 'text-[#1b4329]'
             }`}
           >
             الكلية التطبيقية
           </span>
           <span
             className={`font-bold font-kufi ${sizeMap[size].divider} ${
-              isLight ? 'text-amber-400' : 'text-amber-600'
+              isLight ? 'text-[#e5d4a6]' : 'text-[#a4874b]'
             }`}
           >
             -
           </span>
           <span
             className={`font-semibold font-kufi ${sizeMap[size].sub} ${
-              isLight ? 'text-blue-100' : 'text-blue-900'
+              isLight ? 'text-emerald-100' : 'text-[#245836]'
             }`}
           >
             وحدة الإرشاد المهني والتوظيف

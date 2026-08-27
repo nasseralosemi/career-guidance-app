@@ -77,36 +77,36 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
         <div className="p-4 sm:p-8 bg-slate-100 overflow-x-auto flex justify-center">
           <div
             ref={certRef}
-            className="printable-certificate relative w-[800px] h-[565px] bg-[#fcfaf5] text-slate-800 p-8 rounded-sm shadow-lg border-[10px] border-[#1E3A8A] flex flex-col justify-between select-none overflow-hidden"
+            className="printable-certificate relative w-[800px] h-[565px] bg-[#fcfaf5] text-slate-800 p-8 rounded-sm shadow-lg border-[10px] border-[#1b4329] flex flex-col justify-between select-none overflow-hidden"
             style={{
-              boxShadow: 'inset 0 0 0 3px #b0893a, inset 0 0 0 7px #1E3A8A, inset 0 0 0 9px #d4af37',
+              boxShadow: 'inset 0 0 0 3px #a4874b, inset 0 0 0 7px #1b4329, inset 0 0 0 9px #d4af37',
             }}
           >
             {/* Arabesque Corner Ornaments */}
             <div className="absolute top-3 right-3 w-16 h-16 pointer-events-none opacity-40">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-amber-700">
-                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#b0893a" opacity="0.2" />
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-[#8f743c]">
+                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#a4874b" opacity="0.2" />
                 <path d="M5 5 L95 5 M5 5 L5 95 M15 15 L85 15 M15 15 L15 85" strokeWidth="2" />
                 <circle cx="50" cy="50" r="10" strokeWidth="1.5" />
               </svg>
             </div>
             <div className="absolute top-3 left-3 w-16 h-16 pointer-events-none opacity-40 transform -scale-x-100">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-amber-700">
-                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#b0893a" opacity="0.2" />
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-[#8f743c]">
+                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#a4874b" opacity="0.2" />
                 <path d="M5 5 L95 5 M5 5 L5 95 M15 15 L85 15 M15 15 L15 85" strokeWidth="2" />
                 <circle cx="50" cy="50" r="10" strokeWidth="1.5" />
               </svg>
             </div>
             <div className="absolute bottom-3 right-3 w-16 h-16 pointer-events-none opacity-40 transform -scale-y-100">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-amber-700">
-                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#b0893a" opacity="0.2" />
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-[#8f743c]">
+                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#a4874b" opacity="0.2" />
                 <path d="M5 5 L95 5 M5 5 L5 95 M15 15 L85 15 M15 15 L15 85" strokeWidth="2" />
                 <circle cx="50" cy="50" r="10" strokeWidth="1.5" />
               </svg>
             </div>
             <div className="absolute bottom-3 left-3 w-16 h-16 pointer-events-none opacity-40 transform scale-[-1]">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-amber-700">
-                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#b0893a" opacity="0.2" />
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full stroke-[#8f743c]">
+                <path d="M0 0 L100 0 L100 20 L20 20 L20 100 L0 100 Z" fill="#a4874b" opacity="0.2" />
                 <path d="M5 5 L95 5 M5 5 L5 95 M15 15 L85 15 M15 15 L15 85" strokeWidth="2" />
                 <circle cx="50" cy="50" r="10" strokeWidth="1.5" />
               </svg>
@@ -114,17 +114,17 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
 
             {/* Background Watermark Crest */}
             <div className="absolute inset-0 flex items-center justify-center opacity-4 pointer-events-none">
-              <div className="w-96 h-96 rounded-full border-[18px] border-[#1E3A8A] flex items-center justify-center">
-                <Award className="w-64 h-64 text-[#b0893a]" />
+              <div className="w-96 h-96 rounded-full border-[18px] border-[#1b4329] flex items-center justify-center">
+                <Award className="w-64 h-64 text-[#a4874b]" />
               </div>
             </div>
 
             {/* Certificate Header */}
-            <div className="relative z-10 flex items-center justify-between border-b-2 border-amber-600/40 pb-3">
+            <div className="relative z-10 flex items-center justify-between border-b-2 border-[#a4874b]/40 pb-3">
               <div className="text-right">
-                <p className="text-[11px] font-bold text-[#1E3A8A]">المملكة العربية السعودية</p>
-                <p className="text-[12px] font-extrabold text-[#1E3A8A]">الكلية التطبيقية</p>
-                <p className="text-[11px] font-bold text-[#b0893a]">وحدة الإرشاد المهني والتوظيف</p>
+                <p className="text-[11px] font-bold text-[#1b4329]">المملكة العربية السعودية</p>
+                <p className="text-[12px] font-extrabold text-[#1b4329]">الكلية التطبيقية</p>
+                <p className="text-[11px] font-bold text-[#8f743c]">وحدة الإرشاد المهني والتوظيف</p>
               </div>
 
               <div className="flex flex-col items-center">
@@ -133,21 +133,21 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
               </div>
 
               <div className="text-left" dir="ltr">
-                <p className="text-[10px] font-bold text-[#1E3A8A]">Kingdom of Saudi Arabia</p>
-                <p className="text-[11px] font-bold text-[#1E3A8A]">Applied College</p>
-                <p className="text-[10px] font-semibold text-[#b0893a]">Career Guidance & Employment Unit</p>
+                <p className="text-[10px] font-bold text-[#1b4329]">Kingdom of Saudi Arabia</p>
+                <p className="text-[11px] font-bold text-[#1b4329]">Applied College</p>
+                <p className="text-[10px] font-semibold text-[#8f743c]">Career Guidance & Employment Unit</p>
               </div>
             </div>
 
             {/* Certificate Title */}
             <div className="relative z-10 text-center my-2">
               <div className="inline-block relative">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E3A8A] font-kufi tracking-tight px-6 py-1">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1b4329] font-kufi tracking-tight px-6 py-1">
                   شـهـادة شـكـر وتـقـديـر
                 </h1>
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-[#b0893a] to-transparent w-full mt-0.5"></div>
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-[#a4874b] to-transparent w-full mt-0.5"></div>
               </div>
-              <p className="text-xs text-amber-900 font-medium mt-1 font-cairo">
+              <p className="text-xs text-[#785e2b] font-medium mt-1 font-cairo">
                 شهادة إنجاز ومساهمة أكاديمية في برنامج الإرشاد المهني والتوظيف
               </p>
             </div>
@@ -155,15 +155,15 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
             {/* Certificate Body Text */}
             <div className="relative z-10 text-center px-4 space-y-2.5 leading-relaxed font-cairo">
               <p className="text-xs text-slate-600">
-                يسر <strong className="text-[#1E3A8A] font-kufi">إدارة الكلية التطبيقية</strong> ممثلة في <strong className="text-[#1E3A8A] font-kufi">وحدة الإرشاد المهني والتوظيف</strong> أن تتقدم بوافر الشكر وعظيم الامتنان لسعادة:
+                يسر <strong className="text-[#1b4329] font-kufi">إدارة الكلية التطبيقية</strong> ممثلة في <strong className="text-[#1b4329] font-kufi">وحدة الإرشاد المهني والتوظيف</strong> أن تتقدم بوافر الشكر وعظيم الامتنان لسعادة:
               </p>
 
               {/* Professor Name Banner */}
-              <div className="py-1 px-4 bg-amber-50/80 border-y border-amber-300/60 inline-block rounded-md shadow-xs">
-                <span className="text-lg sm:text-xl font-bold font-kufi text-[#1E3A8A]">
+              <div className="py-1 px-4 bg-[#faf6ee] border-y border-[#a4874b]/40 inline-block rounded-md shadow-xs">
+                <span className="text-lg sm:text-xl font-bold font-kufi text-[#1b4329]">
                   {session.professorTitle} / {session.professorName}
                 </span>
-                <span className="text-xs text-[#8c6b24] block font-semibold mt-0.5">
+                <span className="text-xs text-[#8f743c] block font-semibold mt-0.5">
                   قسم {session.department} • {session.campus}
                 </span>
               </div>
@@ -172,7 +172,7 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
                 نظير مساهمته الفاعلة وتعاونه المتميز في تنفيذ وتقديم الورشة التدريبية التخصصية:
               </p>
 
-              <div className="text-sm font-bold text-[#1E3A8A] font-kufi bg-blue-50/80 p-2 rounded-lg border border-blue-200 max-w-lg mx-auto shadow-2xs">
+              <div className="text-sm font-bold text-[#1b4329] font-kufi bg-[#f0f7f2] p-2 rounded-lg border border-[#c8e2d1] max-w-lg mx-auto shadow-2xs">
                 « {session.courseTitle} »
               </div>
 
@@ -182,12 +182,12 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
             </div>
 
             {/* Signatures & Official Seals Footer */}
-            <div className="relative z-10 grid grid-cols-3 items-end pt-3 border-t border-amber-600/30 text-center">
+            <div className="relative z-10 grid grid-cols-3 items-end pt-3 border-t border-[#a4874b]/30 text-center">
               
               {/* Unit Head Signature */}
               <div className="flex flex-col items-center font-cairo">
                 <span className="text-[11px] font-bold text-slate-700">{deanConfig.unitHeadTitle}</span>
-                <span className="text-xs font-extrabold text-[#1E3A8A] mt-0.5 font-kufi">{deanConfig.unitHeadName}</span>
+                <span className="text-xs font-extrabold text-[#1b4329] mt-0.5 font-kufi">{deanConfig.unitHeadName}</span>
                 <div className="w-24 h-9 flex items-center justify-center italic text-slate-400 font-serif text-[11px]">
                   [التوقيع الرقمي المعتمد]
                 </div>
@@ -195,18 +195,18 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
 
               {/* Official Seal / QR Verification */}
               <div className="flex flex-col items-center justify-center">
-                <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#b0893a] bg-amber-50/90 flex flex-col items-center justify-center p-1 shadow-inner">
-                  <QrCode className="w-7 h-7 text-[#1E3A8A]" />
-                  <span className="text-[8px] font-bold text-[#b0893a] uppercase tracking-tighter mt-0.5">MU Verified</span>
+                <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#a4874b] bg-[#faf6ee] flex flex-col items-center justify-center p-1 shadow-inner">
+                  <QrCode className="w-7 h-7 text-[#1b4329]" />
+                  <span className="text-[8px] font-bold text-[#8f743c] uppercase tracking-tighter mt-0.5">MU Verified</span>
                 </div>
                 <span className="text-[9px] text-slate-500 font-mono mt-1 font-cairo">كود التحقق الرقمي</span>
               </div>
 
               {/* Dean of Applied College Official Signature (MANDATORY REQUIREMENT) */}
               <div className="flex flex-col items-center font-cairo">
-                <span className="text-[11px] font-extrabold text-[#1E3A8A] font-kufi">{deanConfig.deanTitle}</span>
-                <span className="text-xs font-bold text-amber-900 mt-0.5 font-kufi">{deanConfig.deanName}</span>
-                <div className="w-28 h-9 flex items-center justify-center italic text-blue-900 font-serif font-bold text-xs bg-blue-50/50 rounded border border-blue-200/50 my-0.5">
+                <span className="text-[11px] font-extrabold text-[#1b4329] font-kufi">{deanConfig.deanTitle}</span>
+                <span className="text-xs font-bold text-[#785e2b] mt-0.5 font-kufi">{deanConfig.deanName}</span>
+                <div className="w-28 h-9 flex items-center justify-center italic text-[#1b4329] font-serif font-bold text-xs bg-[#f0f7f2] rounded border border-[#c8e2d1] my-0.5">
                   شادي الشويعر
                 </div>
                 <span className="text-[9px] text-slate-500 font-medium">الختم والاعتماد الرسمي</span>
@@ -220,7 +220,7 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
         {/* Modal Bottom Actions (No Print) */}
         <div className="no-print p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs font-cairo">
           <div className="flex items-center gap-2 text-slate-600">
-            <ShieldCheck className="w-4 h-4 text-blue-800" />
+            <ShieldCheck className="w-4 h-4 text-[#1b4329]" />
             <span>هذه الشهادة وثيقة رسمية معتمدة برقم تسلسلي موثق في سجلات الكلية التطبيقية.</span>
           </div>
 
@@ -239,7 +239,7 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
 
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white rounded-xl font-bold flex items-center gap-1.5 shadow-sm cursor-pointer font-kufi"
+              className="px-4 py-2 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl font-bold flex items-center gap-1.5 shadow-sm cursor-pointer font-kufi"
             >
               <Download className="w-4 h-4" />
               <span>تحميل وطباعة الشهادة</span>

@@ -138,42 +138,42 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
       </header>
 
       {/* Hero Welcome Banner - Geometric Balance */}
-      <section className="bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-950 text-white py-6 px-4 sm:px-8 relative overflow-hidden">
+      <section className="bg-gradient-to-r from-[#143520] via-[#1b4329] to-[#0f2818] text-white py-6 px-4 sm:px-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-geometric-grid pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 text-xs px-3 py-1 rounded-full border border-amber-400/30 mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 bg-[#a4874b]/20 text-[#e5d4a6] text-xs px-3 py-1 rounded-full border border-[#a4874b]/40 mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#e5d4a6]" />
                 <span>منظومة الشراكة الأكاديمية بالكلية التطبيقية</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold font-kufi text-white">
                 أهلاً بك، {currentProfessor.title} {currentProfessor.name}
               </h1>
-              <p className="text-xs sm:text-sm text-blue-100/90 mt-1 max-w-2xl font-cairo">
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-2xl font-cairo">
                 بوابتك الرقمية المباشرة لاختيار حقائب الإرشاد المهني، جدولة الورش، وتحميل المواد التعليمية، مع إصدار شهادات الشكر الفورية المعتمدة من رئيس الكلية التطبيقية.
               </p>
             </div>
 
             {/* Quick Stats Grid with Geometric Balance */}
             <div className="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-amber-400">
-                <div className="text-lg sm:text-2xl font-bold font-kufi text-amber-300">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-[#a4874b]">
+                <div className="text-lg sm:text-2xl font-bold font-kufi text-[#e5d4a6]">
                   {completedSessions.length}
                 </div>
-                <div className="text-[10px] sm:text-xs text-blue-100/90 font-medium mt-0.5">ورش منجزة</div>
+                <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">ورش منجزة</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-blue-400">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-emerald-400">
                 <div className="text-lg sm:text-2xl font-bold font-kufi text-white">
                   {totalStudentsImpacted}
                 </div>
-                <div className="text-[10px] sm:text-xs text-blue-100/90 font-medium mt-0.5">طالباً مستفيداً</div>
+                <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">طالباً مستفيداً</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-emerald-400">
-                <div className="text-lg sm:text-2xl font-bold font-kufi text-amber-300">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-[#c8aa62]">
+                <div className="text-lg sm:text-2xl font-bold font-kufi text-[#e5d4a6]">
                   {completedSessions.filter((s) => s.certificateIssued).length}
                 </div>
-                <div className="text-[10px] sm:text-xs text-blue-100/90 font-medium mt-0.5">شهادات معتمدة</div>
+                <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">شهادات معتمدة</div>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               onClick={() => setActiveTab('courses')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === 'courses'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -200,14 +200,14 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               onClick={() => setActiveTab('my_sessions')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer relative ${
                 activeTab === 'my_sessions'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
               <CalendarIcon className="w-4 h-4" />
               <span>جدول ورشي ومتابعة التنفيذ</span>
               {scheduledSessions.length > 0 && (
-                <span className="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-[#a4874b] text-white text-[10px] font-bold flex items-center justify-center">
                   {scheduledSessions.length}
                 </span>
               )}
@@ -217,7 +217,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               onClick={() => setActiveTab('certificates')}
               className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === 'certificates'
-                  ? 'bg-blue-900 text-white shadow-xs border-b-2 border-amber-400'
+                  ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
@@ -227,7 +227,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
           </div>
 
           <div className="hidden lg:flex items-center gap-2 text-xs text-slate-500 font-medium">
-            <Clock className="w-3.5 h-3.5 text-blue-700" />
+            <Clock className="w-3.5 h-3.5 text-[#1b4329]" />
             <span>العام الأكاديمي: {deanConfig.academicYear}</span>
           </div>
         </div>
@@ -257,7 +257,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                   onClick={() => setCategoryFilter('all')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
                     categoryFilter === 'all'
-                      ? 'bg-blue-900 text-white'
+                      ? 'bg-[#1b4329] text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -267,7 +267,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                   onClick={() => setCategoryFilter('cv_portfolio')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
                     categoryFilter === 'cv_portfolio'
-                      ? 'bg-blue-900 text-white'
+                      ? 'bg-[#1b4329] text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -277,7 +277,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                   onClick={() => setCategoryFilter('interview_skills')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
                     categoryFilter === 'interview_skills'
-                      ? 'bg-blue-900 text-white'
+                      ? 'bg-[#1b4329] text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -287,7 +287,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                   onClick={() => setCategoryFilter('career_readiness')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
                     categoryFilter === 'career_readiness'
-                      ? 'bg-blue-900 text-white'
+                      ? 'bg-[#1b4329] text-white'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -301,20 +301,20 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               {filteredCourses.map((course) => (
                 <div
                   key={course.id}
-                  className="glass-card rounded-2xl border border-slate-200 hover:border-blue-600 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group border-r-4 border-r-blue-700"
+                  className="glass-card rounded-2xl border border-slate-200 hover:border-[#1b4329] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group border-r-4 border-r-[#1b4329]"
                 >
                   {/* Card Header */}
                   <div className="p-5 pb-3">
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-xs font-mono font-bold bg-amber-50 text-amber-900 px-2.5 py-1 rounded-lg border border-amber-200">
+                      <span className="text-xs font-mono font-bold bg-[#faf6ee] text-[#785e2b] px-2.5 py-1 rounded-lg border border-[#a4874b]/30">
                         {course.code}
                       </span>
-                      <span className="text-[11px] font-semibold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                      <span className="text-[11px] font-semibold text-[#1b4329] bg-[#f0f7f2] px-2.5 py-0.5 rounded-full border border-[#c8e2d1]">
                         {course.categoryLabel}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-900 transition-colors leading-snug line-clamp-2">
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-[#1b4329] transition-colors leading-snug line-clamp-2">
                       {course.title}
                     </h3>
 
@@ -325,14 +325,14 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                     {/* Metadata Chips */}
                     <div className="flex items-center gap-3 mt-4 pt-3 border-t border-slate-100 text-xs text-slate-600">
                       <div className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-blue-700" />
+                        <Clock className="w-3.5 h-3.5 text-[#1b4329]" />
                         <span>{course.durationMinutes} دقيقة</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5 text-amber-700" />
+                        <Users className="w-3.5 h-3.5 text-[#8f743c]" />
                         <span>{course.recommendedStudentsMin} - {course.recommendedStudentsMax} طالب</span>
                       </div>
-                      <div className="flex items-center gap-1 mr-auto text-blue-700 font-bold text-[11px]">
+                      <div className="flex items-center gap-1 mr-auto text-[#1b4329] font-bold text-[11px]">
                         <span>{course.materials.length} ملفات جاهزة</span>
                       </div>
                     </div>
@@ -344,15 +344,15 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                       onClick={() => onOpenCourseDrawer(course)}
                       className="flex-1 py-2 px-3 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
                     >
-                      <BookOpen className="w-3.5 h-3.5 text-blue-700" />
+                      <BookOpen className="w-3.5 h-3.5 text-[#1b4329]" />
                       <span>دليل الميسر والملفات</span>
                     </button>
 
                     <button
                       onClick={() => onOpenBookingModal(course)}
-                      className="py-2 px-3.5 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
+                      className="py-2 px-3.5 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
                     >
-                      <CalendarIcon className="w-3.5 h-3.5 text-amber-300" />
+                      <CalendarIcon className="w-3.5 h-3.5 text-[#e5d4a6]" />
                       <span>حجز الورشة</span>
                     </button>
                   </div>
@@ -376,7 +376,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
             {mySessions.length === 0 ? (
               <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center mx-auto mb-3">
+                <div className="w-16 h-16 rounded-full bg-[#f0f7f2] text-[#1b4329] flex items-center justify-center mx-auto mb-3">
                   <CalendarIcon className="w-8 h-8" />
                 </div>
                 <h3 className="text-base font-bold text-slate-800">لا توجد ورش مسجلة باسمك حالياً</h3>
@@ -385,9 +385,9 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </p>
                 <button
                   onClick={() => setActiveTab('courses')}
-                  className="px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs font-bold cursor-pointer transition-all inline-flex items-center gap-2 shadow-xs"
+                  className="px-5 py-2.5 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs font-bold cursor-pointer transition-all inline-flex items-center gap-2 shadow-xs"
                 >
-                  <BookOpen className="w-4 h-4 text-amber-300" />
+                  <BookOpen className="w-4 h-4 text-[#e5d4a6]" />
                   <span>الانتقال لدليل الحقائب التدريبية لحجز ورشة</span>
                 </button>
               </div>
@@ -399,7 +399,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                     <div
                       key={session.id}
                       className={`glass-card rounded-2xl border p-5 shadow-2xs transition-all ${
-                        isCompleted ? 'border-slate-200 border-r-4 border-r-emerald-500 bg-emerald-50/10' : 'border-slate-200 border-r-4 border-r-amber-500 hover:border-blue-400'
+                        isCompleted ? 'border-slate-200 border-r-4 border-r-emerald-600 bg-emerald-50/10' : 'border-slate-200 border-r-4 border-r-[#a4874b] hover:border-[#1b4329]'
                       }`}
                     >
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -410,7 +410,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                             <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                               isCompleted
                                 ? 'bg-emerald-50 text-emerald-900 border border-emerald-300'
-                                : 'bg-amber-50 text-amber-900 border border-amber-300'
+                                : 'bg-[#faf6ee] text-[#785e2b] border border-[#a4874b]/40'
                             }`}>
                               {isCompleted ? '✓ تم التنفيذ بنجاح' : '⏳ مجدولة ومؤكدة'}
                             </span>
@@ -428,15 +428,15 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
                           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 pt-1">
                             <div className="flex items-center gap-1">
-                              <CalendarIcon className="w-3.5 h-3.5 text-blue-700" />
+                              <CalendarIcon className="w-3.5 h-3.5 text-[#1b4329]" />
                               <span>التاريخ: <strong>{session.date}</strong></span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <Clock className="w-3.5 h-3.5 text-blue-700" />
+                              <Clock className="w-3.5 h-3.5 text-[#1b4329]" />
                               <span>الوقت: <strong>{session.timeSlot}</strong></span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                              <MapPin className="w-3.5 h-3.5 text-[#8f743c]" />
                               <span>{session.hallName}</span>
                             </div>
                             <div className="flex items-center gap-1">
@@ -465,24 +465,24 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                           {!isCompleted ? (
                             <button
                               onClick={() => handleOpenCompletionDialog(session)}
-                              className="px-4 py-2.5 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-950 hover:to-blue-900 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                              className="px-4 py-2.5 bg-gradient-to-r from-[#1b4329] to-[#235334] hover:from-[#143520] hover:to-[#1b4329] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                             >
-                              <CheckCircle2 className="w-4 h-4 text-amber-300" />
+                              <CheckCircle2 className="w-4 h-4 text-[#e5d4a6]" />
                               <span>تأكيد إنجاز الورشة وإصدار الشهادة</span>
                             </button>
                           ) : (
                             <button
                               onClick={() => onOpenCertificateModal(session)}
-                              className="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer border border-amber-400/40"
+                              className="px-4 py-2.5 bg-gradient-to-r from-[#a4874b] to-[#8f743c] hover:from-[#8f743c] hover:to-[#785e2b] text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer border border-[#c8aa62]/40"
                             >
-                              <Award className="w-4 h-4 text-amber-200" />
+                              <Award className="w-4 h-4 text-[#faf6ee]" />
                               <span>عرض وطباعة شهادة الشكر</span>
                             </button>
                           )}
 
                           {/* Secondary Action */}
                           <div className="flex items-center gap-2 text-xs">
-                            <span className="text-blue-900/80 font-medium text-[11px]">
+                            <span className="text-[#1b4329]/80 font-medium text-[11px]">
                               ✓ تم إرسال التأكيد للبريد الجامعي
                             </span>
                           </div>
@@ -502,10 +502,10 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
         {/* TAB 3: DIGITAL APPRECIATION CERTIFICATES */}
         {activeTab === 'certificates' && (
           <div className="space-y-6">
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 border-r-4 border-r-amber-500">
+            <div className="glass-card p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 border-r-4 border-r-[#a4874b]">
               <div>
-                <div className="inline-flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 mb-1">
-                  <Award className="w-3.5 h-3.5 text-amber-700" />
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-[#785e2b] bg-[#faf6ee] px-2.5 py-1 rounded-full border border-[#a4874b]/30 mb-1">
+                  <Award className="w-3.5 h-3.5 text-[#8f743c]" />
                   <span>اعتماد الكلية التطبيقية الرسمي</span>
                 </div>
                 <h2 className="text-base sm:text-lg font-bold text-slate-900">شهادات الشكر والتقدير الأكاديمية</h2>
@@ -514,9 +514,9 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </p>
               </div>
 
-              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 text-xs text-blue-900 shrink-0">
+              <div className="p-3 bg-[#f0f7f2] rounded-xl border border-[#c8e2d1] text-xs text-[#1b4329] shrink-0">
                 <span className="font-bold block">إجمالي الشهادات المكتسبة:</span>
-                <span className="text-lg font-bold font-kufi text-blue-950">{completedSessions.length} شهادة معتمدة</span>
+                <span className="text-lg font-bold font-kufi text-[#143520]">{completedSessions.length} شهادة معتمدة</span>
               </div>
             </div>
 
@@ -533,14 +533,14 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 {completedSessions.map((session) => (
                   <div
                     key={session.id}
-                    className="glass-card rounded-2xl border-2 border-amber-300/80 p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden border-r-4 border-r-amber-500"
+                    className="glass-card rounded-2xl border-2 border-[#a4874b]/40 p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden border-r-4 border-r-[#a4874b]"
                   >
                     {/* Top Watermark Pattern */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-bl-full pointer-events-none"></div>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#a4874b]/5 rounded-bl-full pointer-events-none"></div>
 
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-mono font-bold text-amber-900 bg-amber-100/70 px-2 py-0.5 rounded border border-amber-300">
+                        <span className="text-xs font-mono font-bold text-[#785e2b] bg-[#faf6ee] px-2 py-0.5 rounded border border-[#a4874b]/30">
                           {session.certificateId || 'MU-AC-CERT-2026'}
                         </span>
                         <span className="text-[11px] text-slate-500">
@@ -562,7 +562,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                       <button
                         onClick={() => onOpenCertificateModal(session)}
-                        className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="w-full py-2.5 px-4 bg-gradient-to-r from-[#a4874b] to-[#8f743c] hover:from-[#8f743c] hover:to-[#785e2b] text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         <Award className="w-4 h-4" />
                         <span>فتح الشهادة الرسمية والطباعة</span>
@@ -584,12 +584,12 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
           <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 my-auto animate-scaleUp">
             
-            <div className="bg-gradient-to-r from-blue-950 to-blue-900 text-white p-5">
+            <div className="bg-gradient-to-r from-[#143520] to-[#1b4329] text-white p-5">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-6 h-6 text-amber-400" />
+                <CheckCircle2 className="w-6 h-6 text-[#e5d4a6]" />
                 <div>
                   <h3 className="text-base font-bold font-kufi">تأكيد إنجاز ورشة العمل وإصدار الشهادة</h3>
-                  <p className="text-xs text-blue-100 font-cairo">
+                  <p className="text-xs text-emerald-100 font-cairo">
                     خطوة واحدة فقط لاعتماد الإنجاز رسميًا في سجل الكلية التطبيقية
                   </p>
                 </div>
@@ -598,7 +598,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
             <form onSubmit={handleConfirmCompletion} className="p-6 space-y-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                <div>الورشة: <strong className="text-blue-950">{completionModalSession.courseTitle}</strong></div>
+                <div>الورشة: <strong className="text-[#143520]">{completionModalSession.courseTitle}</strong></div>
                 <div>تاريخ الانعقاد: <strong>{completionModalSession.date} ({completionModalSession.timeSlot})</strong></div>
               </div>
 
@@ -614,7 +614,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                     required
                     value={actualStudentsInput}
                     onChange={(e) => setActualStudentsInput(Number(e.target.value))}
-                    className="w-full py-2.5 px-3.5 pr-10 rounded-xl border border-slate-300 text-sm font-bold bg-slate-50/50 focus:ring-2 focus:ring-blue-800"
+                    className="w-full py-2.5 px-3.5 pr-10 rounded-xl border border-slate-300 text-sm font-bold bg-slate-50/50 focus:ring-2 focus:ring-[#1b4329]"
                   />
                   <Users className="w-4 h-4 text-slate-400 absolute inset-y-0 right-3 my-auto pointer-events-none" />
                 </div>
@@ -629,12 +629,12 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                   value={sessionNotesInput}
                   onChange={(e) => setSessionNotesInput(e.target.value)}
                   placeholder="مثال: تفاعل متميز وأسئلة ثرية حول اجتياز فحص أنظمة ATS..."
-                  className="w-full py-2 px-3 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:ring-2 focus:ring-blue-800"
+                  className="w-full py-2 px-3 rounded-xl border border-slate-300 text-xs bg-slate-50/50 focus:ring-2 focus:ring-[#1b4329]"
                 />
               </div>
 
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-3 bg-[#faf6ee] rounded-xl border border-[#a4874b]/30 text-xs text-[#785e2b] flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-[#8f743c] shrink-0 mt-0.5" />
                 <span>
                   عند الضغط على تأكيد، سيتم إصدار <strong>شهادة شكر وتقدير رسمية</strong> معتمدة من رئيس الكلية التطبيقية وإضافتها لسجلك فوراً.
                 </span>
@@ -650,9 +650,9 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-amber-300" />
+                  <CheckCircle2 className="w-4 h-4 text-[#e5d4a6]" />
                   <span>اعتماد الإنجاز واستلام الشهادة</span>
                 </button>
               </div>

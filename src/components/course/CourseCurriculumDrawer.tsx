@@ -29,13 +29,13 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
         <div className="w-screen max-w-2xl bg-white shadow-2xl flex flex-col h-full overflow-hidden border-l border-slate-200">
           
           {/* Drawer Header */}
-          <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-950 text-white px-6 py-5 flex items-start justify-between relative">
+          <div className="bg-gradient-to-r from-[#143520] via-[#1b4329] to-[#0f2818] text-white px-6 py-5 flex items-start justify-between relative">
             <div className="pr-1">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-mono font-bold bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                <span className="text-xs font-mono font-bold bg-[#a4874b]/20 text-[#e5d4a6] px-2.5 py-0.5 rounded-full border border-[#a4874b]/40">
                   {course.code}
                 </span>
-                <span className="text-xs font-medium bg-blue-800/60 text-blue-100 px-2.5 py-0.5 rounded-full border border-blue-400/30">
+                <span className="text-xs font-medium bg-[#143520]/80 text-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                   {course.categoryLabel}
                 </span>
               </div>
@@ -54,11 +54,11 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
           {/* Quick Metrics Bar */}
           <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 flex items-center justify-between text-xs text-slate-600 font-medium font-cairo">
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-blue-800" />
+              <Clock className="w-4 h-4 text-[#1b4329]" />
               <span>المدة الزمنية المقترحة: <strong className="font-kufi">{course.durationMinutes} دقيقة</strong></span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-amber-700" />
+              <Users className="w-4 h-4 text-[#8f743c]" />
               <span>العدد المستهدف: <strong className="font-kufi">{course.recommendedStudentsMin} - {course.recommendedStudentsMax} طالباً</strong></span>
             </div>
           </div>
@@ -69,7 +69,7 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
             {/* Overview Section */}
             <div>
               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-2 font-kufi">
-                <BookOpen className="w-4 h-4 text-blue-800" />
+                <BookOpen className="w-4 h-4 text-[#1b4329]" />
                 <span>الهدف العام ونبذة الحقيبة التدريبية</span>
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200/80">
@@ -80,13 +80,13 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
             {/* Learning Outcomes */}
             <div>
               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-2.5 font-kufi">
-                <Sparkles className="w-4 h-4 text-amber-600" />
+                <Sparkles className="w-4 h-4 text-[#8f743c]" />
                 <span>مخرجات التعلم والكفايات المهنية المستهدفة</span>
               </h3>
               <div className="space-y-2">
                 {course.learningOutcomes.map((outcome, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 bg-blue-50/50 p-2.5 rounded-lg border border-blue-100">
-                    <CheckCircle className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+                  <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 bg-[#f0f7f2]/70 p-2.5 rounded-lg border border-[#c8e2d1]">
+                    <CheckCircle className="w-4 h-4 text-[#1b4329] shrink-0 mt-0.5" />
                     <span>{outcome}</span>
                   </div>
                 ))}
@@ -97,7 +97,7 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 font-kufi">
-                  <Layers className="w-4 h-4 text-blue-800" />
+                  <Layers className="w-4 h-4 text-[#1b4329]" />
                   <span>خطة تيسير الجلسة وتوزيع التوقيت (Facilitation Guide)</span>
                 </h3>
                 <span className="text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md font-mono">
@@ -107,22 +107,22 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
 
               <div className="space-y-3">
                 {course.facilitationGuide.map((step) => (
-                  <div key={step.stepNumber} className="border border-slate-200 rounded-xl p-3.5 bg-white hover:border-blue-300 transition-all">
+                  <div key={step.stepNumber} className="border border-slate-200 rounded-xl p-3.5 bg-white hover:border-[#1b4329]/40 transition-all">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-blue-900 text-white text-xs font-bold flex items-center justify-center font-kufi">
+                        <span className="w-6 h-6 rounded-full bg-[#1b4329] text-white text-xs font-bold flex items-center justify-center font-kufi">
                           {step.stepNumber}
                         </span>
                         <h4 className="text-xs sm:text-sm font-bold text-slate-800 font-kufi">{step.title}</h4>
                       </div>
-                      <span className="text-[11px] font-semibold text-blue-900 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                      <span className="text-[11px] font-semibold text-[#1b4329] bg-[#f0f7f2] px-2 py-0.5 rounded-full border border-[#c8e2d1]">
                         {step.durationMin} دقيقة
                       </span>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed mb-2 pr-8">
                       {step.description}
                     </p>
-                    <div className="text-[11px] text-amber-900 bg-amber-50/80 p-2 rounded-lg border border-amber-200/80 flex items-start gap-1.5 mr-8">
+                    <div className="text-[11px] text-[#785e2b] bg-[#faf6ee] p-2 rounded-lg border border-[#a4874b]/30 flex items-start gap-1.5 mr-8">
                       <span className="font-bold shrink-0 font-kufi">💡 توجيه للمحاضر:</span>
                       <span>{step.trainerTip}</span>
                     </div>
@@ -134,7 +134,7 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
             {/* Downloadable Teaching Packages & Materials */}
             <div>
               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-2.5 font-kufi">
-                <Download className="w-4 h-4 text-blue-800" />
+                <Download className="w-4 h-4 text-[#1b4329]" />
                 <span>الحقيبة التدريبية والمواد القابلة للتحميل (Teaching Packages)</span>
               </h3>
 
@@ -142,20 +142,20 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
                 {course.materials.map((mat) => (
                   <div
                     key={mat.id}
-                    className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-300 transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-[#f0f7f2]/50 hover:border-[#1b4329]/30 transition-all group"
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xs uppercase ${
                         mat.type === 'pptx'
-                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                          ? 'bg-[#faf6ee] text-[#785e2b] border border-[#a4874b]/30'
                           : mat.type === 'pdf'
                           ? 'bg-red-100 text-red-800 border border-red-300'
-                          : 'bg-blue-100 text-blue-800 border border-blue-300'
+                          : 'bg-[#f0f7f2] text-[#1b4329] border border-[#c8e2d1]'
                       }`}>
                         {mat.type}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-slate-800 group-hover:text-blue-900 font-kufi">
+                        <div className="text-xs font-bold text-slate-800 group-hover:text-[#1b4329] font-kufi">
                           {mat.title}
                         </div>
                         <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2">
@@ -168,7 +168,7 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
                     <a
                       href={`data:text/plain;charset=utf-8,${encodeURIComponent(`حقيبة تدريبية معتمدة من الكلية التطبيقية بجامعة المجمعة: ${mat.title} - ${course.title}`)}`}
                       download={`${course.code}-${mat.title}.${mat.type}`}
-                      className="px-3 py-1.5 bg-white group-hover:bg-blue-900 group-hover:text-white border border-slate-300 group-hover:border-blue-900 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer shrink-0 font-kufi"
+                      className="px-3 py-1.5 bg-white group-hover:bg-[#1b4329] group-hover:text-white border border-slate-300 group-hover:border-[#1b4329] text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer shrink-0 font-kufi"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>تحميل</span>
@@ -193,9 +193,9 @@ export const CourseCurriculumDrawer: React.FC<CourseCurriculumDrawerProps> = ({
                 onClose();
                 onSelectForBooking(course);
               }}
-              className="flex-1 py-2.5 px-4 bg-blue-900 hover:bg-blue-950 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 py-2.5 px-4 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Calendar className="w-4 h-4 text-amber-300" />
+              <Calendar className="w-4 h-4 text-[#e5d4a6]" />
               <span>جدولة هذه الورشة لطلابي الآن</span>
             </button>
           </div>
