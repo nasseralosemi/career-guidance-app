@@ -26,7 +26,8 @@ import {
   UserCheck,
   ChevronRight,
   Edit,
-  MessageSquare
+  MessageSquare,
+  KeyRound
 } from 'lucide-react';
 import { WorkshopSession, WorkshopCourse, WhitelistEntry, DeanOfficialConfig, FacultyMember } from '../../types';
 import { LogoBranding } from '../common/LogoBranding';
@@ -69,6 +70,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [facultyTitle, setFacultyTitle] = useState('أستاذ مساعد');
   const [facultyEmail, setFacultyEmail] = useState('');
   const [facultyPhone, setFacultyPhone] = useState('');
+  const [facultyPasscode, setFacultyPasscode] = useState('MU@2026');
   const [facultyDept, setFacultyDept] = useState(DEPARTMENT_OPTIONS[0]);
   const [facultyCampus, setFacultyCampus] = useState(CAMPUS_OPTIONS[0]);
   const [facultyEmpId, setFacultyEmpId] = useState('');
@@ -147,6 +149,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       department: facultyDept,
       campus: facultyCampus,
       employeeId: facultyEmpId || `MU-${Math.floor(10000 + Math.random() * 90000)}`,
+      passcode: facultyPasscode.trim() || 'MU@2026',
       status: 'active',
     });
 
@@ -154,6 +157,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setFacultyName('');
     setFacultyEmail('');
     setFacultyPhone('');
+    setFacultyPasscode('MU@2026');
     setFacultyEmpId('');
   };
 
@@ -475,9 +479,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
-                      <div className="font-bold text-amber-950 font-kufi">التحقق من القائمة البيضاء</div>
+                      <div className="font-bold text-amber-950 font-kufi">التحقق من القائمة البيضاء والرمز السري</div>
                       <div className="text-[11px] text-amber-800/90 mt-0.5">
-                        مفعل وصارم - يُسمح فقط لأعضاء هيئة التدريس المصرح لهم في النظام بالدخول عبر OTP.
+                        مفعل وصارم - التحقق المباشر من مطابقة البريد الجامعي والرمز السري (Passcode) مع القائمة البيضاء المعتمدة.
                       </div>
                     </div>
                   </div>
@@ -689,8 +693,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <thead className="bg-slate-100/90 text-slate-700 font-bold border-b border-slate-200">
                     <tr>
                       <th className="p-3.5">عضو هيئة التدريس</th>
-                      <th className="p-3.5">البريد الجامعي المعتمد</th>
-                      <th className="p-3.5">رقم الجوال (WhatsApp)</th>
+                      <th className="p-3.5">البريد المعتمد</th>
+                      <th className="p-3.5">الرمز السري (Passcode)</th>
                       <th className="p-3.5">القسم الأكاديمي</th>
                       <th className="p-3.5">المقر / الفرع</th>
                       <th className="p-3.5">الرقم الوظيفي</th>
@@ -710,8 +714,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {entry.email}
                         </td>
 
-                        <td className="p-3.5 font-mono text-slate-700" dir="ltr">
-                          {entry.phone}
+                        <td className="p-3.5" dir="ltr">
+                          <span className="font-mono font-bold text-blue-900 bg-blue-50 px-2 py-1 rounded-md border border-blue-200 text-[11px]">
+                            {entry.passcode || 'Rashad2026@'}
+                          </span>
                         </td>
 
                         <td className="p-3.5 text-slate-800">
@@ -743,12 +749,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => {
-                                alert(`تم إرسال رسالة دعوة عبر WhatsApp إلى: ${entry.phone}`);
+                                navigator.clipboard?.writeText?.(`البريد: ${entry.email}\nالرمز السري: ${entry.passcode || 'Rashad2026@'}`);
+                                alert(`تم نسخ بيانات الدخول للأستاذ: ${entry.name}`);
                               }}
                               className="p-1.5 text-blue-700 hover:bg-blue-50 rounded-lg cursor-pointer"
-                              title="إرسال رابط الدخول السريع عبر WhatsApp"
+                              title="نسخ بيانات الدخول"
                             >
-                              <Send className="w-3.5 h-3.5" />
+                              <KeyRound className="w-3.5 h-3.5" />
                             </button>
 
                             <button
@@ -1015,15 +1022,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1 font-kufi">الرقم الوظيفي الجامعي:</label>
-                <input
-                  type="text"
-                  placeholder="مثال: MU-48192"
-                  value={facultyEmpId}
-                  onChange={(e) => setFacultyEmpId(e.target.value)}
-                  className="w-full py-2 px-3 rounded-xl border border-slate-300"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 font-kufi">الرقم الوظيفي الجامعي:</label>
+                  <input
+                    type="text"
+                    placeholder="مثال: MU-48192"
+                    value={facultyEmpId}
+                    onChange={(e) => setFacultyEmpId(e.target.value)}
+                    className="w-full py-2 px-3 rounded-xl border border-slate-300"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 font-kufi">الرمز السري (Passcode):</label>
+                  <input
+                    type="text"
+                    required
+                    dir="ltr"
+                    placeholder="MU@2026"
+                    value={facultyPasscode}
+                    onChange={(e) => setFacultyPasscode(e.target.value)}
+                    className="w-full py-2 px-3 rounded-xl border border-slate-300 font-mono text-left font-bold"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">

@@ -95,6 +95,7 @@ export interface WhitelistEntry {
   department: string;
   campus: string;
   employeeId: string;
+  passcode: string;
   status: 'active' | 'inactive';
   addedAt: string;
 }

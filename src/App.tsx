@@ -28,7 +28,24 @@ export default function App() {
 
   const [whitelist, setWhitelist] = useState<WhitelistEntry[]>(() => {
     const saved = localStorage.getItem('mu_whitelist');
-    return saved ? JSON.parse(saved) : INITIAL_WHITELIST;
+    if (saved) {
+      try {
+        const parsed: WhitelistEntry[] = JSON.parse(saved);
+        return parsed.map((item) => {
+          if (!item.passcode) {
+            const match = INITIAL_WHITELIST.find((w) => w.email.toLowerCase() === item.email.toLowerCase());
+            return {
+              ...item,
+              passcode: match?.passcode || (item.email.toLowerCase().includes('alarshad') ? 'Rashad2026@' : `MU@${item.employeeId?.replace(/[^0-9]/g, '') || '2026'}`)
+            };
+          }
+          return item;
+        });
+      } catch (e) {
+        return INITIAL_WHITELIST;
+      }
+    }
+    return INITIAL_WHITELIST;
   });
 
   const [facultyList, setFacultyList] = useState<FacultyMember[]>(() => {
