@@ -266,47 +266,47 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
       </header>
 
       {/* Hero Welcome Banner - Geometric Balance */}
-      <section className="bg-gradient-to-r from-[#143520] via-[#1b4329] to-[#0f2818] text-white py-6 px-4 sm:px-8 relative z-30 overflow-visible">
+      <section className="bg-gradient-to-r from-[#143520] via-[#1b4329] to-[#0f2818] text-white py-5 sm:py-6 px-4 sm:px-8 relative z-30 overflow-visible">
         <div className="absolute inset-0 opacity-10 bg-geometric-grid pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10 overflow-visible">
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-[#a4874b]/20 text-[#e5d4a6] text-xs px-4 py-1.5 rounded-full border border-[#a4874b]/40 mb-2.5 shadow-2xs">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-5">
+            <div className="min-w-0 max-w-full">
+              <div className="inline-flex items-center gap-2 bg-[#a4874b]/20 text-[#e5d4a6] text-xs px-3.5 sm:px-4 py-1.5 rounded-full border border-[#a4874b]/40 mb-2 sm:mb-2.5 shadow-2xs max-w-full">
                 <Sparkles className="w-3.5 h-3.5 text-[#e5d4a6] shrink-0" />
-                <span className="font-bold font-cairo">
+                <span className="font-bold font-cairo overflow-hidden text-ellipsis whitespace-nowrap">
                   منظومة الشراكة الأكاديمية بالكلية التطبيقية — للعام الأكاديمي {deanConfig.academicYear}
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold font-kufi text-white">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold font-kufi text-white">
                 أهلاً بك، {currentProfessor.title} {currentProfessor.name}
               </h1>
-              <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-2xl font-cairo">
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-2xl font-cairo leading-relaxed">
                 بوابتك الرقمية المباشرة لاختيار حقائب الإرشاد المهني، جدولة الورش، وتحميل المواد التعليمية، مع متابعة اعتماد الورش وإصدار شهادات الشكر الرسمية المعتمدة.
               </p>
             </div>
 
-            {/* Quick Stats Grid with 4 Evenly Distributed Metric Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 shrink-0">
+            {/* Quick Stats Grid with 4 Evenly Distributed Metric Cards (2 cols on mobile, 4 on md) */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:grid-cols-4 shrink-0 w-full xl:w-auto mt-1 xl:mt-0">
               
               {/* Card 1: ورش منجزة */}
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-[#a4874b] min-w-[95px] sm:min-w-[110px]">
-                <div className="text-lg sm:text-2xl font-bold font-kufi text-[#e5d4a6]">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-2.5 sm:p-3 text-center border-r-4 border-r-[#a4874b] min-w-0">
+                <div className="text-base sm:text-xl md:text-2xl font-bold font-kufi text-[#e5d4a6]">
                   {completedSessions.length}
                 </div>
                 <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">ورش معتمدة</div>
               </div>
 
               {/* Card 2: طالباً مستفيداً */}
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-emerald-400 min-w-[95px] sm:min-w-[110px]">
-                <div className="text-lg sm:text-2xl font-bold font-kufi text-white">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-2.5 sm:p-3 text-center border-r-4 border-r-emerald-400 min-w-0">
+                <div className="text-base sm:text-xl md:text-2xl font-bold font-kufi text-white">
                   {totalStudentsImpacted}
                 </div>
                 <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">طالباً مستفيداً</div>
               </div>
 
               {/* Card 3: شهادات معتمدة */}
-              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-[#c8aa62] min-w-[95px] sm:min-w-[110px]">
-                <div className="text-lg sm:text-2xl font-bold font-kufi text-[#e5d4a6]">
+              <div className="bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-2.5 sm:p-3 text-center border-r-4 border-r-[#c8aa62] min-w-0">
+                <div className="text-base sm:text-xl md:text-2xl font-bold font-kufi text-[#e5d4a6]">
                   {completedSessions.filter((s) => s.certificateIssued).length}
                 </div>
                 <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">شهادات معتمدة</div>
@@ -314,7 +314,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
               {/* Card 4: ترتيب الدكتور / التصنيف بالكلية مع التلميح التفاعلي Tooltip on Hover */}
               <div 
-                className="relative group bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-3 text-center border-r-4 border-r-[#f3e5b8] min-w-[95px] sm:min-w-[110px] transition-all hover:bg-white/15 cursor-pointer z-30"
+                className="relative group bg-white/10 backdrop-blur-xs border border-white/15 rounded-xl p-2.5 sm:p-3 text-center border-r-4 border-r-[#f3e5b8] min-w-0 transition-all hover:bg-white/15 cursor-pointer z-30"
                 onClick={() => setIsRankTooltipOpen((prev) => !prev)}
               >
                 
@@ -333,7 +333,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </button>
 
                 {/* Main Value: Doctor Rank (Arabic Text Format) */}
-                <div className="text-sm sm:text-base md:text-lg font-bold font-kufi text-[#f3e5b8] flex items-center justify-center min-h-[28px] sm:min-h-[32px] leading-tight truncate px-1">
+                <div className="text-xs sm:text-sm md:text-base font-bold font-kufi text-[#f3e5b8] flex items-center justify-center min-h-[24px] sm:min-h-[28px] md:min-h-[32px] leading-tight truncate px-1">
                   <span>{arabicDoctorRankText}</span>
                 </div>
                 <div className="text-[10px] sm:text-xs text-emerald-100/90 font-medium mt-0.5">ترتيب الدكتور</div>
@@ -408,32 +408,32 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
       {/* Navigation Tabs Bar */}
       <div className="bg-white border-b border-slate-200 sticky top-18 z-10 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-2.5">
+          <div className="flex flex-row overflow-x-auto whitespace-nowrap scrollbar-none gap-1.5 sm:gap-2 md:gap-3 md:flex-wrap md:overflow-visible items-center">
             <button
               onClick={() => setActiveTab('courses')}
-              className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'courses'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <BookOpen className="w-4 h-4" />
-              <span>دليل الحقائب التدريبية المعتمدة ({courses.length})</span>
+              <BookOpen className="w-4 h-4 shrink-0" />
+              <span>دليل الحقائب التدريبية ({courses.length})</span>
             </button>
 
             <button
               onClick={() => setActiveTab('my_sessions')}
-              className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer relative ${
+              className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer relative ${
                 activeTab === 'my_sessions'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <CalendarIcon className="w-4 h-4" />
+              <CalendarIcon className="w-4 h-4 shrink-0" />
               <span>جدول ورشي ومتابعة التنفيذ</span>
               {scheduledSessions.length > 0 && (
-                <span className="w-5 h-5 rounded-full bg-[#a4874b] text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full bg-[#a4874b] text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center">
                   {scheduledSessions.length}
                 </span>
               )}
@@ -441,26 +441,26 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
 
             <button
               onClick={() => setActiveTab('certificates')}
-              className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'certificates'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <Award className="w-4 h-4" />
-              <span>شهادات الشكر والتقدير الرقمية ({completedSessions.length})</span>
+              <Award className="w-4 h-4 shrink-0" />
+              <span>شهادات الشكر ({completedSessions.length})</span>
             </button>
 
             {/* Annual Academic Achievement Report Tab */}
             <button
               onClick={() => setActiveTab('annual_report')}
-              className={`py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'annual_report'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4 shrink-0" />
               <span>تقرير الإنجاز السنوي</span>
             </button>
           </div>
@@ -885,22 +885,22 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
         {activeTab === 'annual_report' && (
           <div className="space-y-6 animate-fadeIn">
             {/* Top Action & Control Header Bar */}
-            <div className="glass-card p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 border-r-4 border-r-[#1b4329] bg-white">
+            <div className="glass-card p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3.5 sm:gap-4 border-r-4 border-r-[#1b4329] bg-white">
               <div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#143520] bg-[#eef7f1] px-3 py-1 rounded-full border border-[#c8e2d1] mb-1.5">
                   <FileText className="w-3.5 h-3.5 text-[#1b4329]" />
                   <span>وثيقة أكاديمية رسمية معتمدة</span>
                 </div>
-                <h2 className="text-base sm:text-lg font-bold text-slate-900">
+                <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900">
                   تقرير الإنجاز السنوي والأنشطة الإرشادية والمهنية
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5 max-w-2xl">
+                <p className="text-xs text-slate-500 mt-0.5 max-w-2xl leading-relaxed">
                   سجل متكامل وموثق لجميع ورش العمل المعتمدة المنفذة للعام الأكاديمي {deanConfig.academicYear} لتقديمه في ملف الترقية أو تقرير الأداء السنوي.
                 </p>
               </div>
 
-              {/* Direct Print & Open in New Tab Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              {/* Direct Print & Open in New Tab Action Buttons (side by side in a single line on mobile & desktop) */}
+              <div className="flex flex-row items-center gap-2 w-full md:w-auto shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -916,11 +916,11 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                     const blobUrl = URL.createObjectURL(blob);
                     window.open(blobUrl, '_blank');
                   }}
-                  className="py-2.5 px-4 rounded-xl text-xs font-bold border border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                  className="flex-1 md:flex-initial py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-[11px] sm:text-xs font-bold border border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer shadow-2xs whitespace-nowrap"
                   title="فتح التقرير في نافذة مستقلة"
                 >
-                  <ExternalLink className="w-4 h-4 text-slate-500" />
-                  <span>فتح في نافذة مستقلة</span>
+                  <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 shrink-0" />
+                  <span>نافذة مستقلة</span>
                 </button>
 
                 <button
@@ -948,196 +948,240 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                       }
                     }, 800);
                   }}
-                  className="py-2.5 px-5 bg-gradient-to-r from-[#1b4329] via-[#245836] to-[#143520] hover:from-[#143520] hover:to-[#1b4329] text-white rounded-xl text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 border border-[#a4874b]/50 cursor-pointer disabled:opacity-50"
+                  className="flex-1 md:flex-initial py-2 sm:py-2.5 px-3 sm:px-5 bg-gradient-to-r from-[#1b4329] via-[#245836] to-[#143520] hover:from-[#143520] hover:to-[#1b4329] text-white rounded-xl text-[11px] sm:text-xs md:text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 border border-[#a4874b]/50 cursor-pointer disabled:opacity-50 whitespace-nowrap"
                   title="طباعة السجل الرسمي أو حفظه كملف PDF"
                 >
-                  <Printer className="w-4 h-4 text-[#e5d4a6]" />
-                  <span>{isReportPrinting ? 'جاري التجهيز...' : 'طباعة السجل / حفظ كـ PDF'}</span>
+                  <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#e5d4a6] shrink-0" />
+                  <span>{isReportPrinting ? 'جاري التجهيز...' : 'طباعة السجل / PDF'}</span>
                 </button>
               </div>
             </div>
 
             {/* Notification message feedback */}
             {reportFeedbackMsg && (
-              <div className="p-3.5 bg-[#eef7f1] border border-[#a6d4b5] rounded-xl text-xs text-[#143520] flex items-center gap-2 font-bold shadow-2xs">
-                <Check className="w-4 h-4 text-[#1b4329]" />
+              <div className="p-3 bg-[#eef7f1] border border-[#a6d4b5] rounded-xl text-xs text-[#143520] flex items-center gap-2 font-bold shadow-2xs">
+                <Check className="w-4 h-4 text-[#1b4329] shrink-0" />
                 <span>{reportFeedbackMsg}</span>
               </div>
             )}
 
             {/* FULL EMBEDDED ACADEMIC REPORT DOCUMENT */}
-            <div className="bg-white rounded-2xl border border-slate-300/90 shadow-sm p-6 sm:p-10 text-slate-800 relative overflow-hidden font-cairo">
+            <div className="bg-white rounded-2xl border border-slate-300/90 shadow-sm p-4 sm:p-6 md:p-10 text-slate-800 relative overflow-hidden font-cairo">
               {/* Subtle Document Watermark / Top Corner Trim */}
-              <div className="absolute top-0 right-0 w-36 h-36 bg-[#1b4329]/5 rounded-bl-full pointer-events-none"></div>
-              <div className="absolute top-0 left-0 w-36 h-36 bg-[#a4874b]/5 rounded-br-full pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-28 sm:w-36 h-28 sm:h-36 bg-[#1b4329]/5 rounded-bl-full pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-28 sm:w-36 h-28 sm:h-36 bg-[#a4874b]/5 rounded-br-full pointer-events-none"></div>
 
               {/* Official Academic Header */}
-              <div className="border-b-2 border-[#1b4329] pb-6 mb-6">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="border-b-2 border-[#1b4329] pb-4 sm:pb-6 mb-5 sm:mb-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-right">
                   {/* Right Header Text */}
-                  <div className="text-center sm:text-right space-y-0.5">
-                    <p className="text-xs font-bold text-slate-600">المملكة العربية السعودية</p>
-                    <p className="text-xs font-bold text-slate-600">وزارة التعليم - جامعة المجمعة</p>
-                    <p className="text-sm font-black text-[#143520]">الكلية التطبيقية</p>
-                    <p className="text-xs font-bold text-[#8f743c]">وحدة الإرشاد والتطوير المهني</p>
+                  <div className="space-y-0.5">
+                    <p className="text-[11px] sm:text-xs font-bold text-slate-600">المملكة العربية السعودية</p>
+                    <p className="text-[11px] sm:text-xs font-bold text-slate-600">وزارة التعليم - جامعة المجمعة</p>
+                    <p className="text-xs sm:text-sm font-black text-[#143520]">الكلية التطبيقية</p>
+                    <p className="text-[11px] sm:text-xs font-bold text-[#8f743c]">وحدة الإرشاد والتطوير المهني</p>
                   </div>
 
                   {/* Center Emblem / Identity */}
-                  <div className="flex flex-col items-center">
-                    <LogoBranding className="h-14 w-auto mb-1" showText={false} />
-                    <span className="text-[11px] font-bold text-[#143520] tracking-wider font-kufi">
+                  <div className="flex flex-col items-center my-1 sm:my-0">
+                    <LogoBranding className="h-11 sm:h-14 w-auto mb-1" showText={false} />
+                    <span className="text-[10px] sm:text-[11px] font-bold text-[#143520] tracking-wider font-kufi">
                       بوابة الإرشاد والتطوير المهني
                     </span>
                   </div>
 
                   {/* Left Official Metadata */}
                   <div className="text-center sm:text-left space-y-1 text-xs">
-                    <div className="bg-[#faf6ee] px-3 py-1 rounded-lg border border-[#a4874b]/30 inline-block font-mono text-[11px] font-bold text-[#785e2b]">
+                    <div className="bg-[#faf6ee] px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg border border-[#a4874b]/30 inline-block font-mono text-[10px] sm:text-[11px] font-bold text-[#785e2b]">
                       الرقم المرجعي: MU-AC-REP-{new Date().getFullYear()}-{currentProfessor.id.replace(/\D/g, '').padStart(3, '0') || '101'}
                     </div>
-                    <div className="text-slate-600 text-[11px]">
+                    <div className="text-slate-600 text-[10px] sm:text-[11px]">
                       التاريخ: {new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
                     </div>
-                    <div className="text-slate-500 text-[11px]">
+                    <div className="text-slate-500 text-[10px] sm:text-[11px]">
                       الموافق: {new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
                     </div>
                   </div>
                 </div>
 
                 {/* Report Main Banner Title */}
-                <div className="text-center mt-6 pt-4 border-t border-slate-100">
-                  <span className="inline-block bg-[#1b4329] text-white text-xs font-bold px-4 py-1 rounded-full mb-2">
+                <div className="text-center mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100">
+                  <span className="inline-block bg-[#1b4329] text-white text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-0.5 sm:py-1 rounded-full mb-1.5">
                     العام الأكاديمي: {deanConfig.academicYear}
                   </span>
-                  <h1 className="text-xl sm:text-2xl font-black text-[#143520] font-kufi">
+                  <h1 className="text-base sm:text-xl md:text-2xl font-black text-[#143520] font-kufi">
                     تقرير الإنجاز السنوي لأنشطة التدريب والجاهزية المهنية
                   </h1>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-[11px] sm:text-xs text-slate-500 mt-1 max-w-xl mx-auto">
                     سجل توثيقي رسمي للبرامج التدريبية المعتمدة المنفذة للطلبة من قبل عضو هيئة التدريس
                   </p>
                 </div>
               </div>
 
-              {/* Professor Academic Profile Card */}
-              <div className="bg-[#faf8f5] rounded-xl border border-[#e2d5be] p-4 sm:p-5 mb-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-500 block mb-0.5">اسم عضو هيئة التدريس:</span>
-                    <strong className="text-sm text-slate-900 block font-bold">{currentProfessor.name}</strong>
+              {/* Professor Academic Profile Card (Stacked flex on mobile, grid on sm/lg) */}
+              <div className="bg-[#faf8f5] rounded-xl border border-[#e2d5be] p-3.5 sm:p-5 mb-5 sm:mb-6">
+                <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs">
+                  <div className="border-b sm:border-b-0 pb-2 sm:pb-0 border-slate-200/60">
+                    <span className="text-slate-500 block mb-0.5 text-[11px]">اسم عضو هيئة التدريس:</span>
+                    <strong className="text-xs sm:text-sm text-slate-900 block font-bold">{currentProfessor.name}</strong>
                   </div>
-                  <div>
-                    <span className="text-slate-500 block mb-0.5">الرتبة الأكاديمية:</span>
-                    <strong className="text-sm text-[#143520] block font-bold">{currentProfessor.title || 'أستاذ مشارك'}</strong>
+                  <div className="border-b sm:border-b-0 pb-2 sm:pb-0 border-slate-200/60">
+                    <span className="text-slate-500 block mb-0.5 text-[11px]">الرتبة الأكاديمية:</span>
+                    <strong className="text-xs sm:text-sm text-[#143520] block font-bold">{currentProfessor.title || 'أستاذ مشارك'}</strong>
                   </div>
-                  <div>
-                    <span className="text-slate-500 block mb-0.5">القسم والفرع:</span>
-                    <strong className="text-sm text-slate-900 block font-bold">
+                  <div className="border-b sm:border-b-0 pb-2 sm:pb-0 border-slate-200/60">
+                    <span className="text-slate-500 block mb-0.5 text-[11px]">القسم والفرع:</span>
+                    <strong className="text-xs sm:text-sm text-slate-900 block font-bold">
                       {currentProfessor.department} ({currentProfessor.campus})
                     </strong>
                   </div>
                   <div>
-                    <span className="text-slate-500 block mb-0.5">البريد الإلكتروني الجامعي:</span>
-                    <strong className="text-xs font-mono text-[#8f743c] block">{currentProfessor.email}</strong>
+                    <span className="text-slate-500 block mb-0.5 text-[11px]">البريد الإلكتروني الجامعي:</span>
+                    <strong className="text-[11px] sm:text-xs font-mono text-[#8f743c] block break-all">{currentProfessor.email}</strong>
                   </div>
                 </div>
               </div>
 
-              {/* 4 Statistical KPI Highlight Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                <div className="p-4 bg-white rounded-xl border-2 border-emerald-100 shadow-2xs text-center">
-                  <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-1.5">
-                    <CheckCircle className="w-4 h-4" />
+              {/* 4 Statistical KPI Highlight Cards (2 cols on mobile, 4 on lg) */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-5 sm:mb-6">
+                <div className="p-3 sm:p-4 bg-white rounded-xl border-2 border-emerald-100 shadow-2xs text-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-1">
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-2xl sm:text-3xl font-black font-kufi text-[#143520] block">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-kufi text-[#143520] block">
                     {completedSessions.length}
                   </span>
-                  <span className="text-xs text-slate-600 font-bold">ورش عمل معتمدة</span>
+                  <span className="text-[10px] sm:text-xs text-slate-600 font-bold">ورش عمل معتمدة</span>
                 </div>
 
-                <div className="p-4 bg-white rounded-xl border-2 border-emerald-100 shadow-2xs text-center">
-                  <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-1.5">
-                    <Users className="w-4 h-4" />
+                <div className="p-3 sm:p-4 bg-white rounded-xl border-2 border-emerald-100 shadow-2xs text-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-1">
+                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-2xl sm:text-3xl font-black font-kufi text-[#143520] block">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-kufi text-[#143520] block">
                     {totalStudentsImpacted}
                   </span>
-                  <span className="text-xs text-slate-600 font-bold">طالباً مستفيداً</span>
+                  <span className="text-[10px] sm:text-xs text-slate-600 font-bold">طالباً مستفيداً</span>
                 </div>
 
-                <div className="p-4 bg-white rounded-xl border-2 border-amber-100 shadow-2xs text-center">
-                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-1.5">
-                    <Award className="w-4 h-4" />
+                <div className="p-3 sm:p-4 bg-white rounded-xl border-2 border-amber-100 shadow-2xs text-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-1">
+                    <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-2xl sm:text-3xl font-black font-kufi text-[#785e2b] block">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-kufi text-[#785e2b] block">
                     {completedSessions.length}
                   </span>
-                  <span className="text-xs text-slate-600 font-bold">شهادات شكر رسمية</span>
+                  <span className="text-[10px] sm:text-xs text-slate-600 font-bold">شهادات شكر رسمية</span>
                 </div>
 
-                <div className="p-4 bg-white rounded-xl border-2 border-amber-100 shadow-2xs text-center">
-                  <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-1.5">
-                    <Sparkles className="w-4 h-4" />
+                <div className="p-3 sm:p-4 bg-white rounded-xl border-2 border-amber-100 shadow-2xs text-center">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-1">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
-                  <span className="text-2xl sm:text-3xl font-black font-kufi text-[#785e2b] block">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-black font-kufi text-[#785e2b] block">
                     {myTotalPoints}
                   </span>
-                  <span className="text-xs text-slate-600 font-bold">
+                  <span className="text-[10px] sm:text-xs text-slate-600 font-bold">
                     نقطة تميز ({arabicDoctorRankText})
                   </span>
                 </div>
               </div>
 
-              {/* Detailed Completed Workshops Table */}
+              {/* Detailed Completed Workshops (Responsive Table on md/lg + Mobile Card list on sm) */}
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-2">
                     <BookOpen className="w-4 h-4 text-[#1b4329]" />
                     <span>سجل ورش العمل والفعاليات المنفذة</span>
                   </h3>
-                  <span className="text-xs text-slate-500 font-medium">
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium">
                     إجمالي الجلسات المسجلة: {completedSessions.length} ورشة
                   </span>
                 </div>
 
                 {completedSessions.length === 0 ? (
-                  <div className="p-8 text-center bg-slate-50 rounded-xl border border-slate-200">
-                    <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <div className="p-6 sm:p-8 text-center bg-slate-50 rounded-xl border border-slate-200">
+                    <AlertCircle className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400 mx-auto mb-2" />
                     <p className="text-xs font-bold text-slate-600">لا توجد ورش عمل مكتملة وموثقة في هذا العام الأكاديمي حتى الآن.</p>
                     <p className="text-[11px] text-slate-500 mt-1">بمجرد تقديم ورشة وتأكيدها ستظهر كافة تفاصيلها والشهادات المعتمدة هنا تلقائياً.</p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto rounded-xl border border-slate-200">
-                    <table className="w-full text-right text-xs">
-                      <thead className="bg-[#1b4329] text-white">
-                        <tr>
-                          <th className="p-3 font-bold text-center w-12">#</th>
-                          <th className="p-3 font-bold">عنوان الحقيبة التدريبية</th>
-                          <th className="p-3 font-bold text-center">التاريخ والتوقيت</th>
-                          <th className="p-3 font-bold text-center">المقر والقاعة</th>
-                          <th className="p-3 font-bold text-center">عدد الحضور</th>
-                          <th className="p-3 font-bold text-center">رقم الشهادة المعتمدة</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200 bg-white">
-                        {completedSessions.map((session, idx) => (
-                          <tr key={session.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}>
-                            <td className="p-3 text-center font-bold text-slate-500">{idx + 1}</td>
-                            <td className="p-3">
-                              <span className="font-bold text-slate-900 block">{session.courseTitle}</span>
-                              <span className="text-[10px] font-mono text-[#8f743c] bg-[#faf6ee] px-1.5 py-0.2 rounded inline-block mt-0.5 border border-[#a4874b]/30">
-                                {session.courseCode || 'MU-TRAIN'}
+                  <>
+                    {/* Mobile-Friendly Cards View (Visible on small screens < md) */}
+                    <div className="space-y-3 md:hidden">
+                      {completedSessions.map((session, idx) => (
+                        <div key={session.id} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2 text-xs">
+                          <div className="flex items-start justify-between gap-2 border-b border-slate-200/80 pb-2">
+                            <div className="flex items-start gap-2">
+                              <span className="w-5 h-5 rounded-full bg-[#1b4329] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                {idx + 1}
                               </span>
-                            </td>
-                            <td className="p-3 text-center">
-                              <span className="block font-bold text-slate-800">{session.date}</span>
-                              <span className="text-[11px] text-slate-500 block">{session.timeSlot}</span>
-                            </td>
-                            <td className="p-3 text-center">
-                              <span className="block text-slate-800">{session.campus}</span>
-                              <span className="text-[11px] text-slate-500 block">{session.hallName || 'قاعة التدريب الذكي'}</span>
-                            </td>
-                            <td className="p-3 text-center">
-                              <span className="font-bold text-[#143520] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-block">
+                              <div>
+                                <h4 className="font-bold text-slate-900 leading-snug">{session.courseTitle}</h4>
+                                <span className="text-[10px] font-mono text-[#8f743c] bg-[#faf6ee] px-1.5 py-0.2 rounded inline-block mt-0.5 border border-[#a4874b]/30">
+                                  {session.courseCode || 'MU-TRAIN'}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="font-bold text-[#143520] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] shrink-0">
+                              {session.studentCountActual || session.studentCountTarget} طالباً
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">التاريخ والوقت:</span>
+                              <span className="text-slate-800 font-medium">{session.date} • {session.timeSlot}</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">المقر والقاعة:</span>
+                              <span className="text-slate-800 font-medium">{session.campus} ({session.hallName || 'قاعة التدريب'})</span>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px]">
+                            <span className="text-slate-500 font-medium">رقم الشهادة:</span>
+                            <span className="font-mono text-[10px] font-bold text-[#785e2b] bg-[#faf6ee] px-2 py-0.5 rounded border border-[#a4874b]/30">
+                              {session.certificateId || 'MU-AC-CERT-2026'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Standard Table View (Visible on md and larger screens) */}
+                    <div className="hidden md:block overflow-x-auto rounded-xl border border-slate-200">
+                      <table className="w-full text-right text-xs">
+                        <thead className="bg-[#1b4329] text-white">
+                          <tr>
+                            <th className="p-3 font-bold text-center w-12">#</th>
+                            <th className="p-3 font-bold">عنوان الحقيبة التدريبية</th>
+                            <th className="p-3 font-bold text-center">التاريخ والتوقيت</th>
+                            <th className="p-3 font-bold text-center">المقر والقاعة</th>
+                            <th className="p-3 font-bold text-center">عدد الحضور</th>
+                            <th className="p-3 font-bold text-center">رقم الشهادة المعتمدة</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200 bg-white">
+                          {completedSessions.map((session, idx) => (
+                            <tr key={session.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}>
+                              <td className="p-3 text-center font-bold text-slate-500">{idx + 1}</td>
+                              <td className="p-3">
+                                <span className="font-bold text-slate-900 block">{session.courseTitle}</span>
+                                <span className="text-[10px] font-mono text-[#8f743c] bg-[#faf6ee] px-1.5 py-0.2 rounded inline-block mt-0.5 border border-[#a4874b]/30">
+                                  {session.courseCode || 'MU-TRAIN'}
+                                </span>
+                              </td>
+                              <td className="p-3 text-center">
+                                <span className="block font-bold text-slate-800">{session.date}</span>
+                                <span className="text-[11px] text-slate-500 block">{session.timeSlot}</span>
+                              </td>
+                              <td className="p-3 text-center">
+                                <span className="block text-slate-800">{session.campus}</span>
+                                <span className="text-[11px] text-slate-500 block">{session.hallName || 'قاعة التدريب الذكي'}</span>
+                              </td>
+                              <td className="p-3 text-center">
+                                <span className="font-bold text-[#143520] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full inline-block">
                                 {session.studentCountActual || session.studentCountTarget} طالباً
                               </span>
                             </td>
@@ -1151,38 +1195,39 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                       </tbody>
                     </table>
                   </div>
-                )}
-              </div>
+                </>
+              )}
+            </div>
 
               {/* Official Endorsements & Signatures Section */}
-              <div className="pt-8 mt-8 border-t-2 border-slate-200">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-end text-xs">
+              <div className="pt-6 sm:pt-8 mt-6 sm:mt-8 border-t-2 border-slate-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8 items-end text-xs">
                   {/* Faculty Member Signature */}
-                  <div className="text-center p-4 bg-slate-50/70 rounded-xl border border-slate-200">
-                    <p className="text-slate-500 font-bold mb-1">مُعدّ التقرير (عضو هيئة التدريس)</p>
-                    <p className="font-bold text-slate-900 text-sm">{currentProfessor.name}</p>
-                    <p className="text-slate-500 text-[11px] mb-6">{currentProfessor.title || 'أستاذ مشارك'}</p>
-                    <div className="font-kufi text-xs text-slate-400 border-b border-dashed border-slate-300 pb-1 max-w-[180px] mx-auto">
+                  <div className="text-center p-3.5 sm:p-4 bg-slate-50/70 rounded-xl border border-slate-200">
+                    <p className="text-slate-500 font-bold mb-1 text-[11px] sm:text-xs">مُعدّ التقرير (عضو هيئة التدريس)</p>
+                    <p className="font-bold text-slate-900 text-xs sm:text-sm">{currentProfessor.name}</p>
+                    <p className="text-slate-500 text-[10px] sm:text-[11px] mb-4 sm:mb-6">{currentProfessor.title || 'أستاذ مشارك'}</p>
+                    <div className="font-kufi text-[11px] sm:text-xs text-slate-400 border-b border-dashed border-slate-300 pb-1 max-w-[180px] mx-auto">
                       التوقيع الإلكتروني المعتمد
                     </div>
                   </div>
 
                   {/* Official Dean Seal & Signature */}
-                  <div className="text-center p-4 bg-[#faf6ee] rounded-xl border border-[#a4874b]/40 relative">
+                  <div className="text-center p-3.5 sm:p-4 bg-[#faf6ee] rounded-xl border border-[#a4874b]/40 relative">
                     {/* Stamp Verification Ring */}
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-[10px] font-bold text-emerald-800">
+                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-[9px] sm:text-[10px] font-bold text-emerald-800">
                       ✓ معتمد رسمياً
                     </div>
 
-                    <p className="text-[#8f743c] font-bold mb-1">الاعتماد الرسمي</p>
-                    <p className="font-bold text-slate-900 text-sm">{deanConfig.deanName}</p>
-                    <p className="text-[#143520] font-bold text-[11px] mb-4">
+                    <p className="text-[#8f743c] font-bold mb-1 text-[11px] sm:text-xs">الاعتماد الرسمي</p>
+                    <p className="font-bold text-slate-900 text-xs sm:text-sm">{deanConfig.deanName}</p>
+                    <p className="text-[#143520] font-bold text-[10px] sm:text-[11px] mb-3 sm:mb-4">
                       {deanConfig.deanTitle} • {deanConfig.college}
                     </p>
 
-                    <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#a4874b] mx-auto flex flex-col items-center justify-center p-1 bg-white/80 shadow-2xs">
-                      <Award className="w-6 h-6 text-[#8f743c] mb-0.5" />
-                      <span className="text-[8px] font-bold text-[#785e2b] text-center leading-tight">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-dashed border-[#a4874b] mx-auto flex flex-col items-center justify-center p-1 bg-white/80 shadow-2xs">
+                      <Award className="w-5 h-5 sm:w-6 sm:h-6 text-[#8f743c] mb-0.5" />
+                      <span className="text-[7.5px] sm:text-[8px] font-bold text-[#785e2b] text-center leading-tight">
                         الكلية التطبيقية<br />جامعة المجمعة
                       </span>
                     </div>
@@ -1190,7 +1235,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
                 </div>
 
                 {/* Footer Official Notice */}
-                <div className="text-center text-[10px] text-slate-400 mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <div className="text-center text-[9.5px] sm:text-[10px] text-slate-400 mt-6 sm:mt-8 pt-3 sm:pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2">
                   <span>تم إنشاء هذا السجل عبر النظام الأكاديمي الموحد للجاهزية المهنية - جامعة المجمعة</span>
                   <span>الرمز الأمني للتحقق: <strong>SHA256:MU-AC-{currentProfessor.id}-{deanConfig.academicYear}</strong></span>
                 </div>
