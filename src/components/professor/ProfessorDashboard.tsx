@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Plus, 
   Calendar as CalendarIcon, 
@@ -10,6 +10,7 @@ import {
   Download, 
   FileText, 
   ChevronRight, 
+  ChevronLeft,
   MessageSquare, 
   Sparkles, 
   Share2, 
@@ -79,6 +80,32 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [isReportPrinting, setIsReportPrinting] = useState<boolean>(false);
   const [reportFeedbackMsg, setReportFeedbackMsg] = useState<string | null>(null);
+  const [canScrollTabsLeft, setCanScrollTabsLeft] = useState<boolean>(false);
+  const tabsScrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Check if tabs container can be scrolled horizontally (for mobile RTL layout)
+  const checkTabsScroll = () => {
+    const el = tabsScrollRef.current;
+    if (!el) return;
+    // In RTL, scrollLeft can be negative or positive depending on browser implementation,
+    // or we check if clientWidth < scrollWidth and distance from leftmost point
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 4) {
+      setCanScrollTabsLeft(false);
+      return;
+    }
+    // In standard RTL browsers, scrollLeft is 0 at the start (rightmost in RTL) and goes negative or positive to maxScroll at leftmost.
+    const currentScrollAbs = Math.abs(el.scrollLeft);
+    const remainingScroll = maxScroll - currentScrollAbs;
+    setCanScrollTabsLeft(remainingScroll > 10);
+  };
+
+  useEffect(() => {
+    checkTabsScroll();
+    const handleResize = () => checkTabsScroll();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Filter sessions for this logged-in professor
   const mySessions = sessions.filter(
@@ -235,7 +262,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-kufi" id="professor-portal">
       
       {/* Top Navigation Bar with Official University Branding */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
+      <header className="bg-white/95 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           
           <div className="flex items-center gap-4">
@@ -406,16 +433,22 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
         </div>
       </section>
 
-      {/* Navigation Tabs Bar */}
-      <div className="bg-white border-b border-slate-200 sticky top-18 z-10 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-2.5">
-          <div className="flex flex-row overflow-x-auto whitespace-nowrap scrollbar-none gap-1.5 sm:gap-2 md:gap-3 md:flex-wrap md:overflow-visible items-center">
+      {/* Navigation Tabs Bar with Warm Light Gold Accent & Mobile Scroll Indicator */}
+      <div className="bg-white/95 border-b border-amber-200/70 sticky top-18 z-10 shadow-2xs relative">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-2.5 relative">
+          
+          {/* Scrollable Tabs Row */}
+          <div 
+            ref={tabsScrollRef}
+            onScroll={checkTabsScroll}
+            className="flex flex-row overflow-x-auto whitespace-nowrap scrollbar-none gap-1.5 sm:gap-2 md:gap-3 md:flex-wrap md:overflow-visible items-center"
+          >
             <button
               onClick={() => setActiveTab('courses')}
               className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'courses'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-amber-50/50 hover:text-slate-900'
               }`}
             >
               <BookOpen className="w-4 h-4 shrink-0" />
@@ -427,7 +460,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer relative ${
                 activeTab === 'my_sessions'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-amber-50/50 hover:text-slate-900'
               }`}
             >
               <CalendarIcon className="w-4 h-4 shrink-0" />
@@ -444,7 +477,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'certificates'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-amber-50/50 hover:text-slate-900'
               }`}
             >
               <Award className="w-4 h-4 shrink-0" />
@@ -457,13 +490,30 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
               className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
                 activeTab === 'annual_report'
                   ? 'bg-[#1b4329] text-white shadow-xs border-b-2 border-[#a4874b]'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-amber-50/50 hover:text-slate-900'
               }`}
             >
               <FileText className="w-4 h-4 shrink-0" />
               <span>تقرير الإنجاز السنوي</span>
             </button>
           </div>
+
+          {/* Interactive Mobile Scroll Indicator (Left Edge, pulsating green arrow & gradient shadow) */}
+          {canScrollTabsLeft && (
+            <div 
+              onClick={() => {
+                if (tabsScrollRef.current) {
+                  tabsScrollRef.current.scrollBy({ left: -140, behavior: 'smooth' });
+                }
+              }}
+              className="sm:hidden absolute top-0 bottom-0 left-0 flex items-center justify-start pl-1.5 pr-6 bg-gradient-to-r from-white via-white/90 to-transparent pointer-events-auto cursor-pointer z-20 animate-fadeIn"
+              title="اسحب للمزيد من التبويبات"
+            >
+              <div className="w-6 h-6 rounded-full bg-[#1b4329] text-[#e5d4a6] flex items-center justify-center shadow-md animate-pulse border border-[#a4874b]/50">
+                <ChevronLeft className="w-4 h-4" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
