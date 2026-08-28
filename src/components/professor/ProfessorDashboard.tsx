@@ -262,7 +262,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-kufi" id="professor-portal">
       
       {/* Top Navigation Bar with Official University Branding */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-amber-200/60 sticky top-0 z-30 shadow-2xs">
+      <header className="bg-[#faf6ee]/95 backdrop-blur-md border-b border-[#a4874b]/30 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           
           <div className="flex items-center gap-4">
