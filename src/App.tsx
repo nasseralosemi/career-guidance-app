@@ -93,6 +93,7 @@ export default function App() {
 
   const [selectedCertificateSession, setSelectedCertificateSession] = useState<WorkshopSession | null>(null);
   const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
+  const [professorActiveTab, setProfessorActiveTab] = useState<'courses' | 'my_sessions' | 'certificates' | 'annual_report'>('courses');
 
   // Sync to localStorage
   useEffect(() => {
@@ -190,12 +191,32 @@ export default function App() {
     };
 
     setSessions((prev) => [newSession, ...prev]);
-    setIsBookingModalOpen(false);
-    alert('تم حجز ورشة العمل بنجاح! تم إرسال إشعار التأكيد وتفاصيل الجلسة إلى بريدك الإلكتروني الجامعي.');
   };
 
-  // Session Completion Handler
+  // Session Completion Submission by Professor (Submits for supervisor approval)
   const handleConfirmSessionCompletion = (sessionId: string, actualStudentCount: number, feedbackNotes: string) => {
+    const today = new Date().toISOString().split('T')[0];
+
+    setSessions((prev) =>
+      prev.map((s) => {
+        if (s.id === sessionId) {
+          return {
+            ...s,
+            status: 'pending_approval',
+            studentCountActual: actualStudentCount,
+            sessionNotes: feedbackNotes || s.sessionNotes,
+            submittedForApprovalAt: `${today} ${new Date().toLocaleTimeString('ar-SA')}`,
+            certificateIssued: false,
+            rejectionReason: undefined,
+          };
+        }
+        return s;
+      })
+    );
+  };
+
+  // Supervisor Approves Session and Issues Official Certificate
+  const handleApproveSession = (sessionId: string, supervisorNotes?: string, adjustedStudentCount?: number) => {
     const certNumber = `MU-AC-CERT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
     const today = new Date().toISOString().split('T')[0];
 
@@ -205,12 +226,32 @@ export default function App() {
           return {
             ...s,
             status: 'completed',
-            studentCountActual: actualStudentCount,
-            sessionNotes: feedbackNotes || s.sessionNotes,
+            studentCountActual: adjustedStudentCount !== undefined ? adjustedStudentCount : (s.studentCountActual || s.studentCountTarget),
+            sessionNotes: s.sessionNotes,
+            supervisorNotes: supervisorNotes || s.supervisorNotes,
             certificateIssued: true,
-            certificateId: certNumber,
+            certificateId: s.certificateId || certNumber,
             certificateIssueDate: today,
             completionConfirmedAt: `${today} ${new Date().toLocaleTimeString('ar-SA')}`,
+            approvedBy: deanConfig.unitHeadName || 'رئيس وحدة الإرشاد والتطوير المهني',
+            rejectionReason: undefined,
+          };
+        }
+        return s;
+      })
+    );
+  };
+
+  // Supervisor Requests Modification / Rejects Workshop
+  const handleRejectSession = (sessionId: string, reason: string) => {
+    setSessions((prev) =>
+      prev.map((s) => {
+        if (s.id === sessionId) {
+          return {
+            ...s,
+            status: 'rejected',
+            rejectionReason: reason,
+            certificateIssued: false,
           };
         }
         return s;
@@ -271,6 +312,30 @@ export default function App() {
     setCourses((prev) => [newCourse, ...prev]);
   };
 
+  // Admin Course Update
+  const handleUpdateCourse = (updatedCourse: WorkshopCourse) => {
+    setCourses((prev) =>
+      prev.map((c) => (c.id === updatedCourse.id ? updatedCourse : c))
+    );
+  };
+
+  // Admin Course Delete
+  const handleDeleteCourse = (courseId: string) => {
+    setCourses((prev) => prev.filter((c) => c.id !== courseId));
+  };
+
+  // Admin Session Deletion
+  const handleDeleteSession = (sessionId: string) => {
+    setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+  };
+
+  // Admin Session Edit
+  const handleEditSession = (updatedSession: WorkshopSession) => {
+    setSessions((prev) =>
+      prev.map((s) => (s.id === updatedSession.id ? updatedSession : s))
+    );
+  };
+
   // Admin Session Status Update
   const handleUpdateSessionStatus = (sessionId: string, status: WorkshopSession['status']) => {
     setSessions((prev) =>
@@ -310,6 +375,9 @@ export default function App() {
           courses={courses}
           sessions={sessions}
           deanConfig={deanConfig}
+          facultyList={facultyList}
+          activeTab={professorActiveTab}
+          onTabChange={setProfessorActiveTab}
           onOpenBookingModal={handleOpenBookingModal}
           onOpenCourseDrawer={handleOpenCourseDrawer}
           onOpenCertificateModal={handleOpenCertificateModal}
@@ -335,6 +403,7 @@ export default function App() {
           initialSelectedCourse={preselectedCourseForBooking}
           onConfirmBooking={handleConfirmBooking}
           onOpenCourseDrawer={handleOpenCourseDrawer}
+          onNavigateToMySessions={() => setProfessorActiveTab('my_sessions')}
         />
 
         {/* Official Dean-Certified Certificate Modal */}
@@ -361,7 +430,13 @@ export default function App() {
         onToggleWhitelistStatus={handleToggleWhitelistStatus}
         onDeleteWhitelistEntry={handleDeleteWhitelistEntry}
         onAddNewCourse={handleAddNewCourse}
+        onUpdateCourse={handleUpdateCourse}
+        onDeleteCourse={handleDeleteCourse}
         onUpdateSessionStatus={handleUpdateSessionStatus}
+        onApproveSession={handleApproveSession}
+        onRejectSession={handleRejectSession}
+        onDeleteSession={handleDeleteSession}
+        onEditSession={handleEditSession}
         onOpenCertificateModal={handleOpenCertificateModal}
         onLogout={handleLogout}
       />

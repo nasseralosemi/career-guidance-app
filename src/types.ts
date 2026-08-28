@@ -54,7 +54,7 @@ export interface WorkshopCourse {
   isActive: boolean;
 }
 
-export type SessionStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+export type SessionStatus = 'scheduled' | 'in_progress' | 'pending_approval' | 'completed' | 'cancelled' | 'rejected';
 
 export interface WorkshopSession {
   id: string;
@@ -83,6 +83,10 @@ export interface WorkshopSession {
   reminderSentWhatsApp: boolean;
   reminderSentEmail: boolean;
   completionConfirmedAt?: string;
+  submittedForApprovalAt?: string;
+  supervisorNotes?: string;
+  rejectionReason?: string;
+  approvedBy?: string;
   createdAt: string;
 }
 
