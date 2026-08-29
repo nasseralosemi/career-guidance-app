@@ -120,47 +120,47 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
             </div>
 
             {/* Certificate Header */}
-            <div className="relative z-10 flex items-center justify-between border-b-2 border-[#a4874b]/40 pb-3">
-              <div className="text-right">
-                <p className="text-[11px] font-bold text-[#1b4329]">المملكة العربية السعودية</p>
-                <p className="text-[12px] font-extrabold text-[#1b4329]">الكلية التطبيقية</p>
-                <p className="text-[11px] font-bold text-[#8f743c]">وحدة الإرشاد المهني والتوظيف</p>
+            <div className="relative z-10 flex items-center justify-between border-b border-[#a4874b]/30 pb-3">
+              <div className="text-right space-y-0.5">
+                <p className="text-[10px] font-bold text-[#1b4329]">المملكة العربية السعودية</p>
+                <p className="text-[12px] font-extrabold text-[#1b4329] font-kufi">
+                  {deanConfig.university || 'جامعة المجمعة'}
+                </p>
+                <p className="text-[10px] font-semibold text-[#8f743c]">
+                  {deanConfig.deanCollege || 'الكلية التطبيقية'}
+                </p>
               </div>
 
               <div className="flex flex-col items-center">
                 <LogoBranding size="md" variant="horizontal" />
-                <span className="text-[10px] text-slate-500 font-mono mt-1">الرقم المرجعي: {certificateNumber}</span>
               </div>
 
-              <div className="text-left" dir="ltr">
-                <p className="text-[10px] font-bold text-[#1b4329]">Kingdom of Saudi Arabia</p>
-                <p className="text-[11px] font-bold text-[#1b4329]">Applied College</p>
-                <p className="text-[10px] font-semibold text-[#8f743c]">Career Guidance & Employment Unit</p>
+              <div className="text-left space-y-0.5" dir="ltr">
+                <p className="text-[9px] font-bold text-[#1b4329]">Kingdom of Saudi Arabia</p>
+                <p className="text-[11px] font-bold text-[#1b4329]">Majmaah University</p>
+                <p className="text-[9px] font-semibold text-[#8f743c]">Applied College</p>
               </div>
             </div>
 
             {/* Certificate Title */}
-            <div className="relative z-10 text-center my-2">
+            <div className="relative z-10 text-center my-3">
               <div className="inline-block relative">
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1b4329] font-kufi tracking-tight px-6 py-1">
                   شـهـادة شـكـر وتـقـديـر
                 </h1>
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-[#a4874b] to-transparent w-full mt-0.5"></div>
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-[#a4874b] to-transparent w-full mt-1"></div>
               </div>
-              <p className="text-xs text-[#785e2b] font-medium mt-1 font-cairo">
-                شهادة إنجاز ومساهمة أكاديمية في برنامج الإرشاد المهني والتوظيف
-              </p>
             </div>
 
-            {/* Certificate Body Text */}
-            <div className="relative z-10 text-center px-4 space-y-2.5 leading-relaxed font-cairo">
-              <p className="text-xs text-slate-600">
-                يسر <strong className="text-[#1b4329] font-kufi">إدارة الكلية التطبيقية</strong> ممثلة في <strong className="text-[#1b4329] font-kufi">وحدة الإرشاد المهني والتوظيف</strong> أن تتقدم بوافر الشكر وعظيم الامتنان لسعادة:
+            {/* Certificate Body Text (Minimalist & Dignified) */}
+            <div className="relative z-10 text-center px-6 space-y-3 leading-relaxed font-cairo">
+              <p className="text-xs sm:text-sm text-slate-700 font-medium">
+                تسر <strong className="text-[#1b4329] font-bold font-kufi">{deanConfig.unitName || 'وحدة الإرشاد المهني والتوظيف'}</strong> بالكلية التطبيقية أن تتقدم بوافر الشكر والتقدير لسعادة:
               </p>
 
               {/* Professor Name Banner */}
-              <div className="py-1 px-4 bg-[#faf6ee] border-y border-[#a4874b]/40 inline-block rounded-md shadow-xs">
-                <span className="text-lg sm:text-xl font-bold font-kufi text-[#1b4329]">
+              <div className="py-2 px-6 bg-[#faf6ee] border-y border-[#a4874b]/40 inline-block rounded-lg shadow-2xs">
+                <span className="text-lg sm:text-xl font-extrabold font-kufi text-[#1b4329] tracking-wide block">
                   {session.professorTitle} / {session.professorName}
                 </span>
                 <span className="text-xs text-[#8f743c] block font-semibold mt-0.5">
@@ -168,28 +168,28 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
                 </span>
               </div>
 
-              <p className="text-xs text-slate-700 max-w-xl mx-auto">
-                نظير مساهمته الفاعلة وتعاونه المتميز في تنفيذ وتقديم الورشة التدريبية التخصصية:
+              <p className="text-xs sm:text-sm text-slate-700 font-medium">
+                نظير جهوده المتميزة وتعاونه المثمر في تقديم الورشة التدريبية التخصصية:
               </p>
 
-              <div className="text-sm font-bold text-[#1b4329] font-kufi bg-[#f0f7f2] p-2 rounded-lg border border-[#c8e2d1] max-w-lg mx-auto shadow-2xs">
+              <div className="text-xs sm:text-sm font-bold text-[#1b4329] font-kufi bg-[#f0f7f2] py-2 px-4 rounded-xl border border-[#c8e2d1] max-w-lg mx-auto shadow-2xs">
                 « {session.courseTitle} »
               </div>
 
-              <p className="text-[11px] text-slate-500">
-                والتي استفاد منها عدد ({session.studentCountActual || session.studentCountTarget}) طالباً وطالبة، بتاريخ {issueDateArabic}م، سائلين الله لسعادته دوام التوفيق والسداد.
+              <p className="text-xs text-slate-500 font-medium pt-1">
+                سائلين المولى لسعادته دوام التوفيق والسداد ومزيداً من العطاء والتميز الأكاديمي.
               </p>
             </div>
 
             {/* Signatures & Official Seals Footer */}
-            <div className="relative z-10 grid grid-cols-3 items-end pt-3 border-t border-[#a4874b]/30 text-center">
+            <div className="relative z-10 grid grid-cols-3 items-end pt-4 border-t border-[#a4874b]/30 text-center mt-4">
               
               {/* Unit Head Signature */}
-              <div className="flex flex-col items-center font-cairo">
-                <span className="text-[11px] font-bold text-slate-700">{deanConfig.unitHeadTitle}</span>
-                <span className="text-xs font-extrabold text-[#1b4329] mt-0.5 font-kufi">{deanConfig.unitHeadName}</span>
-                <div className="w-24 h-9 flex items-center justify-center italic text-slate-400 font-serif text-[11px]">
-                  [التوقيع الرقمي المعتمد]
+              <div className="flex flex-col items-center font-cairo space-y-1">
+                <span className="text-[11px] font-bold text-slate-700">{deanConfig.unitHeadTitle || 'مشرف وحدة الإرشاد المهني والتوظيف'}</span>
+                <span className="text-xs sm:text-sm font-bold text-[#1b4329] font-kufi">{deanConfig.unitHeadName || 'أ. ناصر العصيمي'}</span>
+                <div className="w-24 h-7 flex items-center justify-center italic text-slate-400 font-serif text-[11px] select-none">
+                  [توقيع معتمد]
                 </div>
               </div>
 
@@ -197,21 +197,26 @@ export const OfficialCertificateModal: React.FC<OfficialCertificateModalProps> =
               <div className="flex flex-col items-center justify-center">
                 <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#a4874b] bg-[#faf6ee] flex flex-col items-center justify-center p-1 shadow-inner">
                   <QrCode className="w-7 h-7 text-[#1b4329]" />
-                  <span className="text-[8px] font-bold text-[#8f743c] uppercase tracking-tighter mt-0.5">MU Verified</span>
+                  <span className="text-[8px] font-bold text-[#8f743c] uppercase tracking-tighter mt-0.5 font-mono">MU Verified</span>
                 </div>
-                <span className="text-[9px] text-slate-500 font-mono mt-1 font-cairo">كود التحقق الرقمي</span>
+                <span className="text-[9px] text-slate-400 font-mono mt-1 font-cairo">الختم والتوثيق الرقمي</span>
               </div>
 
-              {/* Dean of Applied College Official Signature (MANDATORY REQUIREMENT) */}
-              <div className="flex flex-col items-center font-cairo">
-                <span className="text-[11px] font-extrabold text-[#1b4329] font-kufi">{deanConfig.deanTitle}</span>
-                <span className="text-xs font-bold text-[#785e2b] mt-0.5 font-kufi">{deanConfig.deanName}</span>
-                <div className="w-28 h-9 flex items-center justify-center italic text-[#1b4329] font-serif font-bold text-xs bg-[#f0f7f2] rounded border border-[#c8e2d1] my-0.5">
-                  شادي الشويعر
+              {/* Dean of Applied College Official Signature */}
+              <div className="flex flex-col items-center font-cairo space-y-1">
+                <span className="text-[11px] font-extrabold text-[#1b4329] font-kufi">{deanConfig.deanTitle || 'رئيس الكلية التطبيقية'}</span>
+                <span className="text-xs sm:text-sm font-bold text-[#785e2b] font-kufi">{deanConfig.deanName || 'د. شادي بن صالح الشويعر'}</span>
+                <div className="w-24 h-7 flex items-center justify-center italic text-[#1b4329] font-serif font-bold text-[11px] select-none">
+                  [الاعتماد والتوقيع]
                 </div>
-                <span className="text-[9px] text-slate-500 font-medium">الختم والاعتماد الرسمي</span>
               </div>
 
+            </div>
+
+            {/* Discrete Serial & Issue Date Tag */}
+            <div className="relative z-10 flex items-center justify-between text-[9px] text-slate-400 font-mono pt-2 border-t border-slate-100">
+              <span>الرقم المرجعي: {certificateNumber}</span>
+              <span>تاريخ الاعتماد: {issueDateArabic}م</span>
             </div>
 
           </div>

@@ -307,6 +307,28 @@ export default function App() {
     setWhitelist((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const handleUpdateWhitelistEntry = (updatedEntry: WhitelistEntry) => {
+    setWhitelist((prev) =>
+      prev.map((item) => (item.id === updatedEntry.id ? updatedEntry : item))
+    );
+    setFacultyList((prev) =>
+      prev.map((fac) =>
+        fac.id === updatedEntry.id
+          ? {
+              ...fac,
+              name: updatedEntry.name,
+              title: updatedEntry.title,
+              email: updatedEntry.email,
+              phone: updatedEntry.phone,
+              department: updatedEntry.department,
+              campus: updatedEntry.campus,
+              employeeId: updatedEntry.employeeId,
+            }
+          : fac
+      )
+    );
+  };
+
   // Admin Course Creation
   const handleAddNewCourse = (newCourse: WorkshopCourse) => {
     setCourses((prev) => [newCourse, ...prev]);
@@ -427,6 +449,7 @@ export default function App() {
         deanConfig={deanConfig}
         onUpdateDeanConfig={setDeanConfig}
         onAddWhitelistEntry={handleAddWhitelistEntry}
+        onUpdateWhitelistEntry={handleUpdateWhitelistEntry}
         onToggleWhitelistStatus={handleToggleWhitelistStatus}
         onDeleteWhitelistEntry={handleDeleteWhitelistEntry}
         onAddNewCourse={handleAddNewCourse}

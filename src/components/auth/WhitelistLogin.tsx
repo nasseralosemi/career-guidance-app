@@ -11,7 +11,6 @@ import {
   UserCheck, 
   LogIn, 
   Info,
-  Building2,
   KeyRound,
   Presentation,
   GraduationCap,
@@ -365,17 +364,6 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
                     </>
                   )}
                 </button>
-
-                {/* Security Note */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                  <span className="flex items-center gap-1">
-                    <Building2 className="w-3.5 h-3.5 text-[#1b4329]" />
-                    <span>الكلية التطبيقية - جامعة المجمعة</span>
-                  </span>
-                  <span className="text-slate-400 font-mono text-[10px]">
-                    v2.5 Secured
-                  </span>
-                </div>
               </form>
             )}
 
