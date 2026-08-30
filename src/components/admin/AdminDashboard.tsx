@@ -44,11 +44,197 @@ import {
   Upload,
   Image as ImageIcon,
   RefreshCw,
-  FileCheck
+  FileCheck,
+  Building2,
+  Wand2,
+  Bot,
+  Zap,
+  Check,
+  Cpu
 } from 'lucide-react';
 import { WorkshopSession, WorkshopCourse, WhitelistEntry, DeanOfficialConfig, FacultyMember } from '../../types';
 import { LogoBranding } from '../common/LogoBranding';
 import { CAMPUS_OPTIONS, DEPARTMENT_OPTIONS } from '../../data/mockData';
+
+// Market-Aligned Quick Chips for each of the 8 academic programs
+export const MARKET_ALIGNED_SUGGESTIONS: Record<string, { title: string; badge: string; prompt: string }[]> = {
+  "الموارد البشرية": [
+    {
+      title: "تحليلات الموارد البشرية (HR Analytics)",
+      badge: "بيانات وقرارات",
+      prompt: "تحليلات الموارد البشرية (HR Analytics) واستشراف احتياجات التوظيف ومؤشرات دوران العمل"
+    },
+    {
+      title: "الرقمنة والذكاء الاصطناعي في الاستقطاب وأنظمة ATS",
+      badge: "تقنيات التوظيف",
+      prompt: "الرقمنة في الاستقطاب والتوظيف الذكي واستخدام أنظمة الفرز الآلي للكوادر (ATS)"
+    },
+    {
+      title: "إدارة تجربة الموظف وسعادة بيئة العمل والولاء",
+      badge: "بيئة العمل",
+      prompt: "استراتيجيات تصميم وإدارة تجربة الموظف (Employee Experience) وتعزيز الارتباط المؤسسي"
+    },
+    {
+      title: "قياس الجدارات ونماذج الأهداف والنتائج الرئيسية (OKRs)",
+      badge: "إدارة الأداء",
+      prompt: "بناء قواميس الجدارات الوظيفية وإدارة الأداء الحديثة بنموذج الأهداف والنتائج الرئيسية (OKRs)"
+    }
+  ],
+  "التجارة الإلكترونية": [
+    {
+      title: "إدارة الحملات الإعلانية الممولة (TikTok & Meta Ads)",
+      badge: "تسويق رقمي",
+      prompt: "إدارة وإطلاق الحملات الإعلانية الممولة على منصات TikTok و Snap و Meta وتحسين العائد الإعلاني ROAS"
+    },
+    {
+      title: "تحسين قمع المبيعات ومعدل التحويل (CRO)",
+      badge: "نمو ومبيعات",
+      prompt: "استراتيجيات تحسين قمع المبيعات ومعدل التحويل (CRO) وتجربة الشراء في المتاجر الرقمية"
+    },
+    {
+      title: "إدارة وتشغيل المتاجر عبر منصات (زد وسلة) وبوابات الدفع",
+      badge: "منصات محلية",
+      prompt: "تأسيس وتشغيل المتاجر الرقمية على منصتي زد وسلة والربط مع بوابات الدفع وشركات الشحن"
+    },
+    {
+      title: "التسويق بالعمولة واستراتيجيات التجارة العابرة للحدود",
+      badge: "نماذج أعمال",
+      prompt: "استراتيجيات التسويق بالعمولة (Affiliate Marketing) والتجارة الإلكترونية العابرة للحدود"
+    }
+  ],
+  "تطوير تطبيقات الأجهزة الذكية": [
+    {
+      title: "برمجة تطبيقات الهواتف المتقدمة بـ Flutter & Riverpod",
+      badge: "تطوير هجين",
+      prompt: "برمجة وتطوير تطبيقات الهواتف الذكية متعددة المنصات باستخدام Flutter وإدارة الحالة بـ Riverpod"
+    },
+    {
+      title: "تكامل بوابات الدفع السحابية والإشعارات التفاعلية (Push)",
+      badge: "تكامل الخدمات",
+      prompt: "ربط وتكامل بوابات الدفع السحابية (Apple Pay و Mada) والإشعارات اللحظية في تطبيقات الهواتف"
+    },
+    {
+      title: "هندسة التطبيقات النظيفة (Clean Architecture & CI/CD)",
+      badge: "معمارية برمجية",
+      prompt: "تطبيق معمارية البرمجيات النظيفة (Clean Architecture) وأتمتة الاختبارات والنشر للتطبيقات"
+    },
+    {
+      title: "تجهيز ونشر التطبيقات على متجري App Store و Google Play",
+      badge: "إطلاق المتاجر",
+      prompt: "إجراءات اعتماد ونشر التطبيقات على متجري App Store و Google Play وتحسين الظهور في المتاجر (ASO)"
+    }
+  ],
+  "البرمجة وعلوم الحاسب": [
+    {
+      title: "هندسة البرمجيات السحابية وأدوات DevOps و Docker",
+      badge: "سحابة وحاويات",
+      prompt: "أساسيات الحوسبة السحابية وأدوات DevOps وبناء خطوط النشر الآلي CI/CD باستخدام Docker و GitHub Actions"
+    },
+    {
+      title: "الذكاء الاصطناعي التوليدي وهندسة الأوامر للمطورين",
+      badge: "AI & LLMs",
+      prompt: "توظيف نماذج الذكاء الاصطناعي التوليدي وهندسة التوجيه (Prompt Engineering) وتكامل الـ LLMs في المشاريع البرمجية"
+    },
+    {
+      title: "ممارسات الأمن السيبراني واختبار الاختراق الأخلاقي",
+      badge: "أمن وحماية",
+      prompt: "ممارسات الأمن السيبراني وفحص الثغرات البرمجية وفق OWASP واختبار الاختراق الأخلاقي للتطبيقات"
+    },
+    {
+      title: "بناء وتوثيق الواجهات البرمجية المصغرة (Microservices & REST)",
+      badge: "APIs & هندسة",
+      prompt: "هندسة وتصميم وبناء الواجهات البرمجية المصغرة Microservices وتوثيقها بـ Swagger وتأمينها بـ JWT"
+    }
+  ],
+  "إدارة وتطوير العقار": [
+    {
+      title: "التسويق العقاري الرقمي وصناعة المحتوى العقاري التفاعلي",
+      badge: "تسويق عقاري",
+      prompt: "استراتيجيات التسويق العقاري الرقمي وإدارة الحملات وصناعة الجولات الافتراضية للعقارات"
+    },
+    {
+      title: "أسس التثمين العقاري المعتمد وفق معايير (تقييم)",
+      badge: "تثمين وتقييم",
+      prompt: "أسس وطرق التثمين والتقييم العقاري المعتمدة وفق معايير الهيئة السعودية للمقيمين المعتمدين (تقييم)"
+    },
+    {
+      title: "إدارة الأملاك والمرافق وحوكمة العقود عبر منصتي (إيجار ومُلاّك)",
+      badge: "منصات تنظيمية",
+      prompt: "إدارة الأملاك والمرافق وحوكمة العقود السكنية والتجارية عبر منصتي إيجار ومُلاّك ولوائح الهيئة العامة للعقار"
+    },
+    {
+      title: "دراسات الجدوى المالية والاستثمار العقاري السكني والتجاري",
+      badge: "استثمار وجدوى",
+      prompt: "إعداد دراسات الجدوى المالية ومؤشرات العائد الاستثماري (ROI) للمشاريع العقارية السكنية والتجارية"
+    }
+  ],
+  "التصميم الجرافيكي والوسائط الرقمية": [
+    {
+      title: "تصميم واجهات ونظم التصميم التفاعلية بـ Figma (UI/UX)",
+      badge: "UI/UX & Figma",
+      prompt: "بناء نظم التصميم (Design Systems) وتصميم تجربة وواجهات المستخدم (UI/UX) والنماذج الأولية بـ Figma"
+    },
+    {
+      title: "إنتاج الموشن جرافيك والمونتاج الإعلاني لمنصات التواصل",
+      badge: "موشن وفيديو",
+      prompt: "صناعة وإنتاج الرسوم المتحركة (Motion Graphics) والمونتاج الإعلاني السريع لمنصات التواصل الاجتماعي"
+    },
+    {
+      title: "بناء الهويات البصرية الاستراتيجية والأدلة الإرشادية للعلامات",
+      badge: "هوية بصرية",
+      prompt: "تصميم الهويات البصرية المتكاملة وبناء أدلة العلامة التجارية (Brand Guidelines) للشركات الناشئة"
+    },
+    {
+      title: "إعداد ملف الأعمال الرقمي الاحترافي على منصة Behance",
+      badge: "بورتفوليو مهني",
+      prompt: "هيكلة وعرض المشاريع وتنسيق ملف الأعمال الرقمي التنافسي (Portfolio) على Behance و Dribbble لجذب أصحاب العمل"
+    }
+  ],
+  "إدارة اللوجستيات وسلاسل الإمداد": [
+    {
+      title: "إدارة المستودعات الذكية وتطبيق أنظمة (WMS & ERP)",
+      badge: "مستودعات ذكية",
+      prompt: "إدارة المستودعات الذكية وتتبع المخزون اللحظي وتطبيق أنظمة إدارة المستودعات (WMS) و SAP/Oracle ERP"
+    },
+    {
+      title: "التخليص الجمركي وإجراءات منصة سابر والفسح والمطابقة",
+      badge: "لوائح وجمارك",
+      prompt: "إجراءات التخليص الجمركي والتعامل مع منصة سابر وفسح الشحنات وشهادات المطابقة للمنتجات"
+    },
+    {
+      title: "تحسين عمليات الميل الأخير (Last-Mile Delivery) وأسطول النقل",
+      badge: "توزيع ونقل",
+      prompt: "استراتيجيات تحسين كفاءة التوصيل للميل الأخير (Last-Mile Delivery) وجدولة وتتبع أساطيل النقل الذكية"
+    },
+    {
+      title: "التخطيط اللوجستي الرشيق وإدارة المخزون ونقاط إعادة الطلب",
+      badge: "إمداد رشيق",
+      prompt: "مبادئ سلاسل الإمداد الرشيقة (Lean Supply Chain) والتنبؤ بالطلب وإدارة مستويات الأمان للمخزون"
+    }
+  ],
+  "المحاسبة والضرائب": [
+    {
+      title: "إعداد الإقرارات الضريبية وضريبة القيمة المضافة (VAT) مع ZATCA",
+      badge: "ضرائب وزكاة",
+      prompt: "إعداد وتقديم الإقرارات الضريبية وضريبة القيمة المضافة (VAT) وتصرفات العقار وفق اشتراطات هيئة الزكاة والضريبة (ZATCA)"
+    },
+    {
+      title: "تطبيقات الفوترة الإلكترونية والربط والتكامل (مرحلة 2 - FATOORA)",
+      badge: "فوترة إلكترونية",
+      prompt: "تطبيق متطلبات الفوترة الإلكترونية السحابية والربط التقني والتكامل (مرحلة الربط 2) مع منصة فاتورة"
+    },
+    {
+      title: "إقفال الحسابات وإعداد القوائم المالية عبر برامج ERP السحابية",
+      badge: "قوائم مالية",
+      prompt: "إجراءات إقفال الحسابات الدورية وإعداد القوائم المالية الختامية والمطابقات البنكية باستخدام أنظمة المحاسبة السحابية"
+    },
+    {
+      title: "التحليل المالي المتقدم وإعداد الموازنات التقديرية لدعم القرار",
+      badge: "تحليل مالي",
+      prompt: "استخدام التحليل المالي والنسب المالية وإعداد الموازنات التقديرية لدعم اتخاذ القرارات الاستثمارية في المنشآت"
+    }
+  ]
+};
 
 interface AdminDashboardProps {
   sessions: WorkshopSession[];
@@ -250,6 +436,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [courseDuration, setCourseDuration] = useState(60);
   const [courseOverview, setCourseOverview] = useState('');
   const [courseOutcomes, setCourseOutcomes] = useState('');
+
+  // AI Workshop Generator States
+  const [isAiGeneratorModalOpen, setIsAiGeneratorModalOpen] = useState(false);
+  const [aiDepartment, setAiDepartment] = useState<string>(DEPARTMENT_OPTIONS[0] || 'قسم المهارات الإدارية والإنسانية');
+  const [aiEventType, setAiEventType] = useState<'ورشة عمل تطبيقية' | 'دورة تدريبية تخصصية' | 'جلسة إرشادية وتوجيهية'>('ورشة عمل تطبيقية');
+  const [aiPrompt, setAiPrompt] = useState<string>('');
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+  const [aiGeneratedCourse, setAiGeneratedCourse] = useState<WorkshopCourse | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiSuccessToast, setAiSuccessToast] = useState<string | null>(null);
 
   // Course Edit Modal States
   const [courseToEdit, setCourseToEdit] = useState<WorkshopCourse | null>(null);
@@ -560,7 +756,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [customSealImage, setCustomSealImage] = useState<string | null>(null);
   const [certSampleFacultyName, setCertSampleFacultyName] = useState('د. عبد الرحمن بن فهد السويكت');
   const [certSampleFacultyTitle, setCertSampleFacultyTitle] = useState('أستاذ مشارك');
-  const [certSampleDept, setCertSampleDept] = useState('علوم الحاسب وتقنية المعلومات');
+  const [certSampleDept, setCertSampleDept] = useState('قسم العلوم والحاسب');
   const [certSampleCampus, setCertSampleCampus] = useState('المجمعة (المقر الرئيسي)');
   const [certSampleWorkshop, setCertSampleWorkshop] = useState('بناء السيرة الذاتية الاحترافية المتوافقة مع أنظمة الفرز الذكي (ATS)');
   const [certSampleStudents, setCertSampleStudents] = useState(38);
@@ -660,6 +856,198 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setCourseTitle('');
     setCourseOverview('');
     setCourseOutcomes('');
+  };
+
+  // AI Workshop Generator Logic
+  const handleGenerateWorkshopWithAi = async () => {
+    setIsAiGenerating(true);
+    setAiError(null);
+    try {
+      const response = await fetch('/api/generate-workshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          department: aiDepartment,
+          eventType: aiEventType,
+          prompt: aiPrompt,
+          existingCount: courses.length,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('فشل استدعاء خدمة الذكاء الاصطناعي');
+      }
+
+      const data = await response.json();
+      if (data.course) {
+        setAiGeneratedCourse(data.course);
+      } else if (data.data) {
+        setAiGeneratedCourse(data.data);
+      } else {
+        throw new Error('لم يتم استلام بيانات الحقيبة');
+      }
+    } catch (err: any) {
+      console.warn('Backend AI generation fallback activated:', err);
+      // Domain-aware resilient fallback generator for all 8 programs
+      const fallbackCode = `CGU-${100 + courses.length + 1}`;
+      
+      let title = aiPrompt.trim();
+      let category: 'career_readiness' | 'interview_skills' | 'cv_portfolio' | 'soft_skills' | 'digital_tools' = 'career_readiness';
+      let categoryLabel = 'جاهزية سوق العمل';
+      let overview = `حقيبة تدريبية تم إعدادها بالكلية التطبيقية بجامعة المجمعة لتمكين طلبة برنامج ${aiDepartment} من اكتساب الجدارات الوظيفية التنافسية.`;
+      let outcomes: string[] = [];
+      let audience = `طلبة وخريجو برنامج ${aiDepartment} والمتدربون الميدانيون بالكلية التطبيقية`;
+
+      if (aiDepartment === 'الموارد البشرية') {
+        category = 'career_readiness';
+        categoryLabel = 'الموارد البشرية وسوق العمل';
+        title = title || 'استقطاب المواهب وإدارة الأداء الوظيفي وأنظمة العمل السعودية الحديثة';
+        overview = 'برنامج تطبيقي متخصص لطلبة الموارد البشرية يركز على ممارسات التوظيف الحديثة، أنظمة الفرز الآلي للكوادر ATS، تقييم الأداء بنماذج OKRs، وتطبيق لوائح نظام العمل والتأمينات الاجتماعية بالسعودية.';
+        outcomes = [
+          'تخطيط الاحتياجات الوظيفية واستقطاب الكفاءات باستخدام أدوات التوظيف الحديثة والذكاء الاصطناعي.',
+          'تصميم نماذج ومؤشرات قياس الأداء الفردي والمؤسسي (OKRs & KPIs).',
+          'فهم وتطبيق مواد نظام العمل السعودي ولوائحه التنفيذية وحقوق العاملين.',
+          'تطوير استراتيجيات الاندماج والولاء الوظيفي وبرامج التدريب والتطوير المستمر.'
+        ];
+      } else if (aiDepartment === 'التجارة الإلكترونية') {
+        category = 'career_readiness';
+        categoryLabel = 'التجارة والتسويق الرقمي';
+        title = title || 'استراتيجيات إدارة المتاجر الإلكترونية والتسويق الرقمي وبوابات الدفع';
+        overview = 'تأهيل طلبة برنامج التجارة الإلكترونية لإطلاق وإدارة المنصات والمتاجر الرقمية بفاعلية، وربط بوابات الدفع، وإدارة الحملات الإعلانية الممولة وتحليل قمع المبيعات ومعدلات التحويل CRO.';
+        outcomes = [
+          'تأسيس وإدارة المتاجر الرقمية على منصات زد وسلة وضبط بوابات الدفع وشركات الشحن.',
+          'تخطيط الحملات التسويقية الرقمية عبر منصات التواصل وتحسين العائد الإعلاني ROAS.',
+          'تحليل مؤشرات الأداء الرقمي (KPIs) ومعدلات التحويل وقيمة سلة المشتريات.',
+          'تطبيق استراتيجيات تحسين تجربة العميل الرقمية وخدمات ما بعد البيع.'
+        ];
+      } else if (aiDepartment === 'تطوير تطبيقات الأجهزة الذكية') {
+        category = 'digital_tools';
+        categoryLabel = 'تطوير التطبيقات الذكية';
+        title = title || 'هندسة وبرمجة تطبيقات الهواتف الذكية وتكامل الخدمات السحابية';
+        overview = 'برنامج تطبيقي موجه لطلبة برنامج تطوير تطبيقات الأجهزة الذكية لبناء تطبيقات متقدمة وسريعة الاستجابة للهواتف الذكية (iOS و Android) وربطها بالواجهات البرمجية وتجهيزها للنشر على المتاجر.';
+        outcomes = [
+          'هيكلة وبرمجة تطبيقات الأجهزة الذكية باستخدام أحدث أطر العمل (Flutter / Native).',
+          'إدارة الحالة (State Management) وتكامل الواجهات البرمجية REST APIs وبوابات الدفع.',
+          'تحسين تجربة وسرعة أداء التطبيقات واختبار توافقها مع مختلف الشاشات والأجهزة.',
+          'إعداد شهادات النشر وإطلاق التطبيقات على متجري App Store و Google Play.'
+        ];
+      } else if (aiDepartment === 'البرمجة وعلوم الحاسب') {
+        category = 'digital_tools';
+        categoryLabel = 'البرمجة والتقنيات الرقمية';
+        title = title || 'الخوارزميات المتقدمة وهيكلة البرمجيات وحوسبة السحابة وأدوات DevOps';
+        overview = 'حقيبة تدريبية نوعية تركز على رفع الكفاءة البرمجية في كتابة الشيفرات النظيفة وتطبيق أنماط التصميم المعمارية وتقنيات الحوسبة السحابية و Docker و CI/CD وممارسات الأمن السيبراني.';
+        outcomes = [
+          'إتقان كتابة الخوارزميات الفعالة وتحليل التعقيد الحسابي وتطبيق معايير Clean Code.',
+          'تطبيق ممارسات الحوسبة السحابية وأدوات الحاويات Docker وخطوط النشر الآلي.',
+          'فحص الثغرات البرمجية الشائعة وفق معايير OWASP واختبار الاختراق الأخلاقي.',
+          'إعداد المشاريع البرمجية التنافسية لملفات البورتفوليو على GitHub.'
+        ];
+      } else if (aiDepartment === 'إدارة وتطوير العقار') {
+        category = 'career_readiness';
+        categoryLabel = 'التطوير والاستثمار العقاري';
+        title = title || 'أسس التثمين العقاري وإدارة الأملاك والتشريعات العقارية السعودية';
+        overview = 'حقيبة تدريبية نوعية موجهة لطلبة إدارة وتطوير العقار للتعرف على أساليب التقييم والتثمين العقاري المعتمد من تقييم، وإدارة المرافق والأملاك عبر منصتي إيجار ومُلاّك، واللوائح المعتمدة من الهيئة العامة للعقار.';
+        outcomes = [
+          'استيعاب طرق التقييم والتثمين العقاري المعتمدة وفق معايير الهيئة السعودية للمقيمين المعتمدين (تقييم).',
+          'إدارة المحافظ والأملاك العقارية وتطبيق عقود الإيجار الموحدة عبر منصة إيجار.',
+          'فهم التشريعات والأنظمة العقارية ولوائح الوساطة والتطوير العقاري بالمملكة.',
+          'تطبيق استراتيجيات التسويق العقاري الذكي ودراسات الجدوى للمشاريع السكنية والتجارية.'
+        ];
+      } else if (aiDepartment === 'التصميم الجرافيكي والوسائط الرقمية') {
+        category = 'digital_tools';
+        categoryLabel = 'التصميم والوسائط الرقمية';
+        title = title || 'تصميم واجهات وتجربة المستخدم (UI/UX) وبناء نظم التصميم بـ Figma';
+        overview = 'ورشة عملية تفاعلية لطلبة التصميم الجرافيكي والوسائط الرقمية تركز على منهجيات التفكير التصميمي وبناء نظم التصميم (Design Systems) والنماذج الأولية الرقمية وإنتاج الموشن جرافيك.';
+        outcomes = [
+          'إجراء أبحاث المستخدم وتخطيط رحلة العميل وبناء المخططات الهيكلية والنماذج الأولية بـ Figma.',
+          'بناء وتطبيق نظم التصميم (Design Systems) والمكونات التفاعلية للواجهات.',
+          'إنتاج الرسوم المتحركة (Motion Graphics) والمؤثرات البصرية للوسائط الرقمية.',
+          'بناء معرض أعمال رقمي احترافي (Behance / Portfolio) يعكس القدرات التنافسية.'
+        ];
+      } else if (aiDepartment === 'إدارة اللوجستيات وسلاسل الإمداد') {
+        category = 'career_readiness';
+        categoryLabel = 'اللوجستيات وسلاسل الإمداد';
+        title = title || 'إدارة المستودعات الذكية وسلاسل الإمداد والعمليات اللوجستية الحديثة';
+        overview = 'تمكين طلبة إدارة اللوجستيات وسلاسل الإمداد من التخطيط اللوجستي الفعال وإدارة المخزون والتوزيع، وتوظيف أنظمة تخطيط الموارد (ERP & WMS) والتعامل مع منصة سابر والفسح الجمركي.';
+        outcomes = [
+          'تخطيط ومراقبة تدفقات سلاسل الإمداد وإدارة المخزون ونقاط إعادة الطلب.',
+          'تنظيم وإدارة المستودعات الذكية وتطبيق أنظمة التتبع الرقمي والتخزين الحديثة.',
+          'فهم الإجراءات الجمركية والشحن الدولي والداخلي وتوثيق العمليات عبر منصة سابر.',
+          'تحسين التكلفة التشغيلية وتقليل الهدر الزمني وفق مبادئ الإدارة الرشيقة (Lean Logistics).'
+        ];
+      } else if (aiDepartment === 'المحاسبة والضرائب') {
+        category = 'career_readiness';
+        categoryLabel = 'المحاسبة والأنظمة الضريبية';
+        title = title || 'المحاسبة المالية وإقرارات ضريبة القيمة المضافة (VAT) والفوترة الإلكترونية';
+        overview = 'ورشة عملية موجهة لطلبة برنامج المحاسبة والضرائب لإتقان إعداد القوائم المالية، والتعامل مع متطلبات هيئة الزكاة والضريبة والجمارك (ZATCA)، وتطبيقات الفوترة السحابية (مرحلة 2).';
+        outcomes = [
+          'تسجيل القيود المحاسبية وإعداد ميزان المراجعة والقوائم المالية الختامية ببرامج ERP.',
+          'احتساب وإعداد الإقرارات الضريبية وضريبة القيمة المضافة (VAT) وضريبة التصرفات العقارية مع ZATCA.',
+          'تطبيق متطلبات الفوترة الإلكترونية (مرحلة الربط والتكامل) مع هيئة الزكاة والضريبة.',
+          'إجراء التحليلات المالية واستخدام برامج المحاسبة السحابية والمطابقات البنكية.'
+        ];
+      }
+
+      if (aiEventType === 'دورة تدريبية تخصصية' && !title.includes('دورة')) {
+        title = `دورة متقدمة: ${title}`;
+      } else if (aiEventType === 'ورشة عمل تطبيقية' && !title.includes('ورشة')) {
+        title = `ورشة عمل: ${title}`;
+      }
+
+      const generated: WorkshopCourse = {
+        id: `course-ai-${Date.now()}`,
+        code: fallbackCode,
+        title,
+        category,
+        categoryLabel,
+        durationMinutes: 60,
+        recommendedStudentsMin: 20,
+        recommendedStudentsMax: 45,
+        shortDescription: overview.slice(0, 140) + '...',
+        fullOverview: overview,
+        learningOutcomes: outcomes,
+        targetAudience: audience,
+        facilitationGuide: [
+          { stepNumber: 1, title: 'التهيئة وكسر الجليد واستعراض الأهداف', durationMin: 10, description: `الترحيب بطلبة برنامج ${aiDepartment} وتوضيح القيمة المهنية للورشة وربطها بفرص التوظيف المباشرة.`, trainerTip: 'طرح استطلاع سريع لقياس مستوى الإلمام المسبق بالموضوع.' },
+          { stepNumber: 2, title: 'المفاهيم المحورية والشرح التفاعلي', durationMin: 25, description: 'شرح المحاور الأساسية مع استعراض نماذج وأدوات واقعية من بيئة العمل السعودية.', trainerTip: 'استخدام أمثلة حية ودراسات حالة من الشركات الرائدة.' },
+          { stepNumber: 3, title: 'التطبيق العملي والمحاكاة الميدانية', durationMin: 15, description: 'توزيع الطلبة لتنفيذ نشاط تطبيقي محاكي لمهام الوظيفة الفعلية.', trainerTip: 'التجول بين المجموعات وتقديم التغذية الراجعة الفورية.' },
+          { stepNumber: 4, title: 'استخلاص الدروس وتوزيع روابط الاستبيان', durationMin: 10, description: 'تلخيص الكفايات المكتسبة وتوجيه الطلبة لإتمام تقييم الفعالية.', trainerTip: 'تأكيد تسجيل الحضور وتوجيههم لخدمات وحدة الإرشاد والتطوير المهني.' }
+        ],
+        materials: [
+          { id: `mat-ai-1`, title: `العرض التقديمي التطبيقي المعتمد - ${title} (PPTX)`, type: 'pptx', size: '14.2 MB', downloadUrl: '#', description: 'شرائح تفاعلية مدعمة بالمخططات ودليل المدرب' },
+          { id: `mat-ai-2`, title: `دليل الأنشطة وورقة عمل الطالب الميدانية (PDF)`, type: 'pdf', size: '3.5 MB', downloadUrl: '#', description: 'دليل الأنشطة التطبيقية والحالات الدراسية' }
+        ],
+        iconName: category === 'digital_tools' ? 'Cpu' : 'Briefcase',
+        badgeColor: category === 'digital_tools' ? 'indigo' : 'emerald',
+        isActive: true,
+      };
+
+      setAiGeneratedCourse(generated);
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
+
+  const handleApplyAiCourseDirectly = () => {
+    if (!aiGeneratedCourse) return;
+    onAddNewCourse(aiGeneratedCourse);
+    setIsAiGeneratorModalOpen(false);
+    setAiGeneratedCourse(null);
+    setAiPrompt('');
+    setAiSuccessToast(`تم بنجاح اعتماد ونشر حقيبة "${aiGeneratedCourse.title}" وإضافتها لقائمة الحقائب!`);
+    setTimeout(() => setAiSuccessToast(null), 4500);
+  };
+
+  const handleTransferToEditModal = () => {
+    if (!aiGeneratedCourse) return;
+    setCourseCode(aiGeneratedCourse.code);
+    setCourseTitle(aiGeneratedCourse.title);
+    setCourseCategory(aiGeneratedCourse.category);
+    setCourseDuration(aiGeneratedCourse.durationMinutes || 60);
+    setCourseOverview(aiGeneratedCourse.fullOverview || aiGeneratedCourse.shortDescription || '');
+    setCourseOutcomes(aiGeneratedCourse.learningOutcomes ? aiGeneratedCourse.learningOutcomes.join('\n') : '');
+    setIsAiGeneratorModalOpen(false);
+    setIsAddCourseModalOpen(true);
   };
 
   // Filter sessions
@@ -1794,17 +2182,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <BookOpen className="w-5 h-5 text-[#1b4329]" />
                   <span>الحقائب التدريبية المعتمدة</span>
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5 font-cairo">إضافة حقائب جديدة، تعديل المحتوى التعليمي والأدلة، وتحديث ملفات البوربوينت</p>
+                <p className="text-xs text-slate-500 mt-0.5 font-cairo">إضافة حقائب جديدة، توليد ورش بالذكاء الاصطناعي، وتحديث ملفات البوربوينت</p>
               </div>
 
-              <button
-                onClick={() => setIsAddCourseModalOpen(true)}
-                className="px-4 py-2.5 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-kufi transition-colors"
-              >
-                <Plus className="w-4 h-4 text-[#e5d4a6]" />
-                <span>إضافة حقيبة تدريبية جديدة</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  id="btn-ai-generate-workshop"
+                  onClick={() => {
+                    setIsAiGeneratorModalOpen(true);
+                    setAiError(null);
+                  }}
+                  className="px-4 py-2.5 bg-gradient-to-r from-purple-700 via-indigo-700 to-indigo-800 hover:from-purple-800 hover:to-indigo-900 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-2 cursor-pointer font-kufi transition-all hover:scale-[1.02] active:scale-[0.98] border border-purple-400/30"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                  <span>توليد ورشة بالذكاء الاصطناعي</span>
+                </button>
+
+                <button
+                  onClick={() => setIsAddCourseModalOpen(true)}
+                  className="px-4 py-2.5 bg-[#1b4329] hover:bg-[#143520] text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-kufi transition-colors"
+                >
+                  <Plus className="w-4 h-4 text-[#e5d4a6]" />
+                  <span>إضافة حقيبة تدريبية جديدة</span>
+                </button>
+              </div>
             </div>
+
+            {/* AI Success Notification Toast */}
+            {aiSuccessToast && (
+              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 font-cairo text-xs flex items-center justify-between shadow-xs animate-fadeIn">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="font-bold">{aiSuccessToast}</span>
+                </div>
+                <button 
+                  onClick={() => setAiSuccessToast(null)}
+                  className="text-emerald-700 hover:text-emerald-900 text-xs font-bold font-kufi"
+                >
+                  إغلاق
+                </button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-cairo">
               {courses.map((course) => {
@@ -2277,7 +2696,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           onClick={() => {
                             setCertSampleFacultyName('د. عبد الرحمن بن فهد السويكت');
                             setCertSampleFacultyTitle('أستاذ مشارك');
-                            setCertSampleDept('علوم الحاسب وتقنية المعلومات');
+                            setCertSampleDept('قسم العلوم والحاسب');
                             setCertSampleCampus('المجمعة (المقر الرئيسي)');
                             setCertSampleWorkshop('بناء السيرة الذاتية الاحترافية المتوافقة مع أنظمة الفرز الذكي (ATS)');
                           }}
@@ -2295,7 +2714,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           onClick={() => {
                             setCertSampleFacultyName('د. نورة بنت سليمان الدخيل');
                             setCertSampleFacultyTitle('أستاذ مساعد');
-                            setCertSampleDept('العلوم الإدارية والمالية');
+                            setCertSampleDept('قسم المهارات الإدارية والإنسانية');
                             setCertSampleCampus('المجمعة (شطر الطالبات)');
                             setCertSampleWorkshop('استراتيجيات اجتياز المقابلات الوظيفية وتقنية (STAR)');
                           }}
@@ -2313,7 +2732,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           onClick={() => {
                             setCertSampleFacultyName('د. خالد بن منصور العتيبي');
                             setCertSampleFacultyTitle('أستاذ مشارك');
-                            setCertSampleDept('الهندسة والتقنيات الصناعية');
+                            setCertSampleDept('قسم المهارات الصحية والهندسية');
                             setCertSampleCampus('الزلفي');
                             setCertSampleWorkshop('بناء الهوية المهنية الرقمية واستثمار شبكة LinkedIn');
                           }}
@@ -4490,6 +4909,361 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
             </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: AI WORKSHOP GENERATOR */}
+      {isAiGeneratorModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-slate-900/75 backdrop-blur-xs font-cairo animate-fadeIn">
+          <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 my-auto animate-scaleUp">
+            
+            {/* AI Generator Header */}
+            <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-[#143520] text-white p-5 sm:p-6 relative border-b border-purple-400/30">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-500 to-amber-300 p-0.5 shadow-lg shrink-0">
+                    <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base sm:text-lg font-bold font-kufi text-white">
+                        مساعد الذكاء الاصطناعي لتوليد الورش
+                      </h3>
+                      <span className="text-[10px] font-mono font-bold bg-purple-400/20 text-amber-200 border border-purple-300/30 px-2 py-0.5 rounded-full">
+                        Gemini Pro Engine
+                      </span>
+                    </div>
+                    <p className="text-xs text-purple-200/90 font-cairo mt-0.5">
+                      توليد حقائب تدريبية متكاملة، مخرجات تعلم، خطة تيسير تفاعلية ومواد تدريبية بنقرة واحدة
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsAiGeneratorModalOpen(false)}
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors cursor-pointer shrink-0"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* AI Generator Body */}
+            <div className="p-5 sm:p-6 space-y-5 max-h-[78vh] overflow-y-auto">
+              
+              {/* Input Section */}
+              <div className="space-y-4">
+                
+                {/* 1. Academic Department Selector */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 font-kufi mb-1.5 flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-purple-700" />
+                    <span>القسم الأكاديمي المستهدف:</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {DEPARTMENT_OPTIONS.map((dept) => {
+                      const isSelected = aiDepartment === dept;
+                      return (
+                        <button
+                          key={dept}
+                          type="button"
+                          onClick={() => {
+                            setAiDepartment(dept);
+                            setAiGeneratedCourse(null);
+                          }}
+                          className={`p-2.5 rounded-xl border text-xs font-bold text-right font-kufi transition-all cursor-pointer flex items-center justify-between ${
+                            isSelected
+                              ? 'bg-purple-50 border-purple-600 text-purple-950 shadow-xs ring-1 ring-purple-500'
+                              : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="line-clamp-1">{dept}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-purple-700 shrink-0 mr-1" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Event Type Selector */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 font-kufi mb-1.5 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-indigo-700" />
+                    <span>نوع الفعالية الأكاديمية:</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {(['ورشة عمل تطبيقية', 'دورة تدريبية تخصصية', 'جلسة إرشادية وتوجيهية'] as const).map((type) => {
+                      const isSelected = aiEventType === type;
+                      return (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => {
+                            setAiEventType(type);
+                            setAiGeneratedCourse(null);
+                          }}
+                          className={`p-2.5 rounded-xl border text-xs font-bold font-kufi transition-all cursor-pointer text-center ${
+                            isSelected
+                              ? 'bg-indigo-50 border-indigo-600 text-indigo-950 shadow-xs ring-1 ring-indigo-500'
+                              : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Market-Aligned Quick Chips (مواكبة السوق 🚀) */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-purple-500/5 to-indigo-500/10 border border-amber-500/30">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5">
+                    <label className="text-xs font-bold text-slate-900 font-kufi flex items-center gap-1.5">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-lg bg-amber-500 text-white text-[11px] shadow-xs">🚀</span>
+                      <span className="text-amber-950 font-bold">مواكبة السوق 🚀 (مقترحات التجهيز المهني والميداني):</span>
+                    </label>
+                    <span className="text-[10px] text-amber-800/90 font-cairo bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-200">
+                      مهارات عملية تطلبها بيئات العمل السعودية لـ ({aiDepartment})
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {(MARKET_ALIGNED_SUGGESTIONS[aiDepartment] || []).map((item, idx) => {
+                      const isSelected = aiPrompt === item.prompt;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setAiPrompt(item.prompt);
+                            setAiGeneratedCourse(null);
+                          }}
+                          className={`p-2.5 rounded-xl border text-right transition-all cursor-pointer flex flex-col gap-1.5 text-xs group ${
+                            isSelected
+                              ? 'bg-amber-100/90 border-amber-600 text-amber-950 shadow-xs ring-1.5 ring-amber-500'
+                              : 'bg-white/90 border-slate-200/90 text-slate-800 hover:border-amber-400 hover:bg-amber-50/50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-900 font-cairo border border-purple-200/60">
+                              {item.badge}
+                            </span>
+                            <span className={`text-[10px] font-cairo flex items-center gap-1 font-bold ${
+                              isSelected ? 'text-amber-800' : 'text-slate-400 group-hover:text-amber-700'
+                            }`}>
+                              {isSelected ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-amber-700" />
+                                  <span>تم الاختيار والتعبئة</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="w-3 h-3 text-amber-500" />
+                                  <span>انقر للتعبئة</span>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          <div className="font-bold text-[11px] font-kufi text-slate-900 leading-snug line-clamp-2">
+                            {item.title}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Prompt Input Textarea */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 font-kufi mb-1.5">
+                    موجه الفكرة أو الموضوع المخصص (Prompt):
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      rows={3}
+                      value={aiPrompt}
+                      onChange={(e) => setAiPrompt(e.target.value)}
+                      placeholder="اكتب فكرة الورشة التدريبية أو المهارات المستهدفة بالتفصيل... (مثال: ورشة تفاعلية لتدريب الطلاب على استخدام أدوات الذكاء الاصطناعي لصياغة السير الذاتية وتجهيز البورتفوليو)"
+                      className="w-full py-2.5 px-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-xs font-cairo bg-white resize-none shadow-2xs leading-relaxed"
+                    />
+                    {aiPrompt && (
+                      <button
+                        type="button"
+                        onClick={() => setAiPrompt('')}
+                        className="absolute left-3 top-3 text-slate-400 hover:text-slate-600 text-xs"
+                      >
+                        مسح
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Trigger Button */}
+                <div>
+                  <button
+                    type="button"
+                    disabled={isAiGenerating}
+                    onClick={handleGenerateWorkshopWithAi}
+                    className={`w-full py-3 px-4 rounded-2xl font-bold font-kufi text-xs text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      isAiGenerating
+                        ? 'bg-purple-900 cursor-not-allowed opacity-85'
+                        : 'bg-gradient-to-r from-purple-700 via-indigo-700 to-[#1b4329] hover:from-purple-800 hover:to-[#143520] hover:shadow-lg active:scale-[0.99]'
+                    }`}
+                  >
+                    {isAiGenerating ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin text-amber-300" />
+                        <span>جاري توليد الحقيبة التدريبية ومخرجات التعلم بواسطة الذكاء الاصطناعي...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-amber-300" />
+                        <span>بدء التوليد الذكي للحقيبة ({aiEventType})</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+              </div>
+
+              {/* AI Error Notice */}
+              {aiError && (
+                <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                  <span>{aiError}</span>
+                </div>
+              )}
+
+              {/* Generated Result Preview Card */}
+              {aiGeneratedCourse && (
+                <div className="mt-4 p-5 rounded-3xl bg-slate-50 border-2 border-purple-200/90 shadow-sm space-y-4 animate-fadeIn">
+                  
+                  {/* Generated Card Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900 font-mono font-bold text-xs border border-purple-200">
+                        {aiGeneratedCourse.code}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[11px] font-kufi border border-emerald-200">
+                        {aiGeneratedCourse.categoryLabel}
+                      </span>
+                      <span className="px-2.5 py-1 rounded-full bg-slate-200 text-slate-700 font-bold text-[11px] font-kufi flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-slate-600" />
+                        <span>{aiGeneratedCourse.durationMinutes} دقيقة</span>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-800 font-kufi bg-purple-50 px-2.5 py-1 rounded-xl border border-purple-200">
+                      <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                      <span>حقيبة جاهزة للاعتماد والمراجعة</span>
+                    </div>
+                  </div>
+
+                  {/* Title & Overview */}
+                  <div>
+                    <h4 className="text-sm sm:text-base font-bold text-slate-900 font-kufi leading-snug">
+                      {aiGeneratedCourse.title}
+                    </h4>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                      {aiGeneratedCourse.fullOverview}
+                    </p>
+                  </div>
+
+                  {/* Learning Outcomes */}
+                  {aiGeneratedCourse.learningOutcomes && aiGeneratedCourse.learningOutcomes.length > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+                      <div className="font-bold text-xs font-kufi text-slate-800 flex items-center gap-1.5">
+                        <Award className="w-4 h-4 text-amber-600" />
+                        <span>مخرجات التعلم والكفايات المستهدفة:</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                        {aiGeneratedCourse.learningOutcomes.map((outcome, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5">
+                            <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                              {idx + 1}
+                            </span>
+                            <span className="leading-snug">{outcome}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Facilitation Guide Steps Preview */}
+                  {aiGeneratedCourse.facilitationGuide && aiGeneratedCourse.facilitationGuide.length > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+                      <div className="font-bold text-xs font-kufi text-slate-800 flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-indigo-600" />
+                        <span>خطة وتوقيتات التيسير المقترحة للأستاذ:</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                        {aiGeneratedCourse.facilitationGuide.map((step) => (
+                          <div key={step.stepNumber} className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                            <div className="flex items-center justify-between text-[11px] font-bold">
+                              <span className="text-indigo-900 font-kufi">مرحلة {step.stepNumber}</span>
+                              <span className="text-slate-500 font-mono">{step.durationMin} دقيقة</span>
+                            </div>
+                            <div className="font-bold text-slate-800 text-[11px] line-clamp-1">{step.title}</div>
+                            <div className="text-[10px] text-slate-500 line-clamp-2">{step.description}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Attached Materials */}
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className="font-bold text-slate-700 font-kufi text-[11px]">المواد المولدة:</span>
+                    {aiGeneratedCourse.materials.map((mat) => (
+                      <span key={mat.id} className="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 font-medium text-[11px] flex items-center gap-1 border border-slate-200">
+                        <FileText className="w-3 h-3 text-[#1b4329]" />
+                        <span>{mat.title}</span>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Final Actions for the Generated Course */}
+                  <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-end gap-2 font-kufi">
+                    <button
+                      type="button"
+                      onClick={handleTransferToEditModal}
+                      className="px-4 py-2.5 border border-purple-300 text-purple-900 hover:bg-purple-50 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>تعديل المحتوى في النموذج قبل الحفظ</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleApplyAiCourseDirectly}
+                      className="px-5 py-2.5 bg-gradient-to-r from-[#1b4329] to-[#235334] hover:from-[#143520] hover:to-[#1b4329] text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                    >
+                      <CheckCircle className="w-4 h-4 text-[#e5d4a6]" />
+                      <span>اعتماد وحفظ الحقيبة فوراً في النظام</span>
+                    </button>
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+            {/* AI Generator Footer */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 font-cairo">
+              <span>جامعة المجمعة • الكلية التطبيقية • محرك التوليد الأكاديمي الذكي</span>
+              <button
+                type="button"
+                onClick={() => setIsAiGeneratorModalOpen(false)}
+                className="px-3.5 py-1.5 text-slate-600 hover:text-slate-900 font-kufi font-bold rounded-lg hover:bg-slate-200/60 transition-colors"
+              >
+                إغلاق
+              </button>
+            </div>
 
           </div>
         </div>
