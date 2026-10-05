@@ -54,7 +54,8 @@ import {
 } from 'lucide-react';
 import { WorkshopSession, WorkshopCourse, WhitelistEntry, DeanOfficialConfig, FacultyMember } from '../../types';
 import { LogoBranding } from '../common/LogoBranding';
-import { CAMPUS_OPTIONS, DEPARTMENT_OPTIONS } from '../../data/mockData';
+import { CAMPUS_OPTIONS, DEPARTMENT_OPTIONS, TIME_SLOTS_PRESETS } from '../../data/mockData';
+import { ExecutiveAnalyticsDashboard } from './ExecutiveAnalyticsDashboard';
 
 // Market-Aligned Quick Chips for each of the 8 academic programs
 export const MARKET_ALIGNED_SUGGESTIONS: Record<string, { title: string; badge: string; prompt: string }[]> = {
@@ -249,6 +250,7 @@ interface AdminDashboardProps {
   onAddNewCourse: (course: WorkshopCourse) => void;
   onUpdateCourse?: (course: WorkshopCourse) => void;
   onDeleteCourse?: (course: string) => void;
+  onAddNewSession?: (session: WorkshopSession) => void;
   onUpdateSessionStatus: (sessionId: string, status: WorkshopSession['status']) => void;
   onApproveSession?: (sessionId: string, supervisorNotes?: string, adjustedStudentCount?: number) => void;
   onRejectSession?: (sessionId: string, reason: string) => void;
@@ -271,6 +273,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onAddNewCourse,
   onUpdateCourse,
   onDeleteCourse,
+  onAddNewSession,
   onUpdateSessionStatus,
   onApproveSession,
   onRejectSession,
@@ -446,6 +449,80 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [aiGeneratedCourse, setAiGeneratedCourse] = useState<WorkshopCourse | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiSuccessToast, setAiSuccessToast] = useState<string | null>(null);
+
+  // Request Workshop to Faculty Modal States
+  const [isRequestFacultyModalOpen, setIsRequestFacultyModalOpen] = useState(false);
+  const [targetFacultyId, setTargetFacultyId] = useState('');
+  const [requestWorkshopTitle, setRequestWorkshopTitle] = useState('');
+  const [requestAcademicProgram, setRequestAcademicProgram] = useState(DEPARTMENT_OPTIONS[0]);
+  const [requestDate, setRequestDate] = useState('');
+  const [requestTimeSlot, setRequestTimeSlot] = useState(TIME_SLOTS_PRESETS[0] || '10:00 ص - 11:30 ص');
+  const [requestHall, setRequestHall] = useState('قاعة التدريب التفاعلي الذكية');
+  const [requestDeliveryMode, setRequestDeliveryMode] = useState<'in_person' | 'remote'>('in_person');
+  const [requestTargetStudentsCount, setRequestTargetStudentsCount] = useState(35);
+  const [requestAdminNotes, setRequestAdminNotes] = useState('');
+  const [requestSuccessToast, setRequestSuccessToast] = useState<string | null>(null);
+
+  const handleOpenRequestFacultyModal = (deptPrefill?: string) => {
+    if (deptPrefill) {
+      setRequestAcademicProgram(deptPrefill);
+      const matchingFaculty = whitelist.find((w) => w.department.includes(deptPrefill) && w.status === 'active');
+      if (matchingFaculty) {
+        setTargetFacultyId(matchingFaculty.id);
+      } else if (whitelist.length > 0) {
+        setTargetFacultyId(whitelist[0].id);
+      }
+    } else {
+      if (!targetFacultyId && whitelist.length > 0) {
+        setTargetFacultyId(whitelist[0].id);
+      }
+    }
+    setRequestWorkshopTitle('');
+    setRequestDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+    setRequestAdminNotes('');
+    setIsRequestFacultyModalOpen(true);
+  };
+
+  const handleSendWorkshopRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!requestWorkshopTitle.trim() || !targetFacultyId) return;
+
+    const targetProf = whitelist.find((w) => w.id === targetFacultyId) || whitelist[0];
+    if (!targetProf) return;
+
+    const newRequestedSession: WorkshopSession = {
+      id: `sess-${Date.now()}`,
+      courseId: `course-custom-${Date.now()}`,
+      courseTitle: requestWorkshopTitle.trim(),
+      courseCode: `CGU-REQ-${Math.floor(100 + Math.random() * 900)}`,
+      professorId: targetProf.id,
+      professorName: targetProf.name,
+      professorTitle: targetProf.title,
+      professorEmail: targetProf.email,
+      professorPhone: targetProf.phone,
+      department: requestAcademicProgram,
+      campus: targetProf.campus,
+      date: requestDate || new Date().toISOString().split('T')[0],
+      timeSlot: requestTimeSlot,
+      hallName: requestHall,
+      deliveryMode: requestDeliveryMode,
+      studentCountTarget: Number(requestTargetStudentsCount) || 35,
+      status: 'pending_faculty_approval',
+      sessionNotes: requestAdminNotes.trim() ? `[توجيه من إدارة الوحدة]: ${requestAdminNotes.trim()}` : undefined,
+      certificateIssued: false,
+      reminderSentWhatsApp: false,
+      reminderSentEmail: false,
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+
+    if (onAddNewSession) {
+      onAddNewSession(newRequestedSession);
+    }
+
+    setIsRequestFacultyModalOpen(false);
+    setRequestSuccessToast(`تم إرسال طلب ورشة "${requestWorkshopTitle}" إلى ${targetProf.title} ${targetProf.name} بنجاح!`);
+    setTimeout(() => setRequestSuccessToast(null), 5000);
+  };
 
   // Course Edit Modal States
   const [courseToEdit, setCourseToEdit] = useState<WorkshopCourse | null>(null);
@@ -1354,254 +1431,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             )}
 
-            {/* Top KPI Cards - Enhanced Uniform Grid with Editable Targets */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              
-              {/* Card 1: Completed Workshops (with editable planned count) */}
-              <div className="glass-card rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs bg-white flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-emerald-600 to-emerald-400"></div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-bold text-slate-600 font-kufi">الورش المنفذة فعلياً</span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={handleOpenEditTargets}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100/80 px-2 py-0.5 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                        title="تعديل إجمالي الورش المخطط لها"
-                      >
-                        <Edit className="w-3 h-3 text-emerald-700" />
-                        <span>تعديل</span>
-                      </button>
-                      <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shadow-2xs">
-                        <CheckCircle className="w-4.5 h-4.5" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-extrabold font-kufi text-emerald-950 tracking-tight">
-                      {completedSessions.length}
-                    </span>
-                    <span className="text-xs font-bold text-slate-500 font-cairo flex items-center gap-1">
-                      <span>من إجمالي {effectivePlannedWorkshops} ورشة</span>
-                      {customPlannedWorkshops !== null && (
-                        <span className="text-[10px] text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded font-mono border border-amber-200/60">
-                          مُخصّص
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 pt-3 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-cairo mb-1.5">
-                    <span>نسبة إنجاز الخطة</span>
-                    <span className="font-bold text-emerald-800">
-                      {Math.round((completedSessions.length / (effectivePlannedWorkshops || 1)) * 100)}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-emerald-600 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, Math.round((completedSessions.length / (effectivePlannedWorkshops || 1)) * 100))}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2: Students Reached (with editable target count) */}
-              <div className="glass-card rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs bg-white flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-[#1b4329] to-[#2d6a4f]"></div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-bold text-slate-600 font-kufi">إجمالي الطلاب المستفيدين</span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={handleOpenEditTargets}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1b4329] bg-[#f0f7f2] hover:bg-[#e2f0e7] px-2 py-0.5 rounded-lg border border-[#c8e2d1] transition-colors cursor-pointer"
-                        title="تعديل إجمالي المستهدف من الطلاب"
-                      >
-                        <Edit className="w-3 h-3 text-[#1b4329]" />
-                        <span>تعديل</span>
-                      </button>
-                      <div className="w-9 h-9 rounded-xl bg-[#f0f7f2] text-[#1b4329] flex items-center justify-center border border-[#c8e2d1] shadow-2xs">
-                        <Users className="w-4.5 h-4.5" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-extrabold font-kufi text-[#143520] tracking-tight">
-                      {totalStudentsReached}
-                    </span>
-                    <span className="text-xs font-bold text-[#1b4329] font-cairo">
-                      طالباً وطالبة
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-cairo mb-1.5">
-                    <div className="flex items-center gap-1">
-                      <span>المستهدف: <strong>{effectiveTargetStudents}</strong> طالب</span>
-                      {customTargetStudents !== null && (
-                        <span className="text-[10px] text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded font-mono border border-amber-200/60">
-                          مُخصّص
-                        </span>
-                      )}
-                    </div>
-                    <span className="font-bold text-[#1b4329]">
-                      {Math.round((totalStudentsReached / (effectiveTargetStudents || 1)) * 100)}% من المستهدف
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-[#1b4329] h-full rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, Math.round((totalStudentsReached / (effectiveTargetStudents || 1)) * 100))}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3: Active Faculty */}
-              <div className="glass-card rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs bg-white flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-blue-700 to-indigo-600"></div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-bold text-slate-600 font-kufi">أعضاء هيئة التدريس الفاعلون</span>
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center border border-blue-200 shadow-2xs">
-                      <UserCheck className="w-5 h-5" />
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-extrabold font-kufi text-slate-900 tracking-tight">
-                      {activeFacultyCount}
-                    </span>
-                    <span className="text-xs font-bold text-slate-500 font-cairo">
-                      دكتور منفذ دورة (من أصل {whitelist.length} بالقائمة)
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600 font-cairo">
-                  <div className="flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-700" />
-                    <span>معدل النشاط الأكاديمي</span>
-                  </div>
-                  <span className="font-bold text-blue-900">
-                    {Math.round((activeFacultyCount / (whitelist.length || 1)) * 100)}%
-                  </span>
-                </div>
-              </div>
-
-              {/* Card 4: Official Certificates */}
-              <div className="glass-card rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs bg-white flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-[#a4874b] to-[#cbb279]"></div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-bold text-slate-600 font-kufi">شهادات الشكر الصادرة</span>
-                    <div className="w-10 h-10 rounded-xl bg-[#faf6ee] text-[#785e2b] flex items-center justify-center border border-[#a4874b]/30 shadow-2xs">
-                      <Award className="w-5 h-5" />
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-extrabold font-kufi text-[#785e2b] tracking-tight">
-                      {totalCertificatesIssued}
-                    </span>
-                    <span className="text-xs font-bold text-slate-500 font-cairo">
-                      شهادة معتمدة
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600 font-cairo">
-                  <div className="flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#1b4329]" />
-                    <span>اعتماد رسمي رقمي</span>
-                  </div>
-                  <span className="font-bold text-[#785e2b]">
-                    100% موثقة
-                  </span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Expanded Full-Width Department Progress Breakdown */}
-            <div className="glass-card rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-xs bg-white space-y-6">
-              
-              {/* Header with Title & Quick Overview Metrics */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2.5 font-kufi">
-                    <div className="p-2 rounded-xl bg-[#f0f7f2] text-[#1b4329] border border-[#c8e2d1]">
-                      <TrendingUp className="w-5 h-5" />
-                    </div>
-                    <span>معدلات إنجاز الورش حسب الأقسام الأكاديمية بالكلية التطبيقية</span>
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1 font-cairo mr-10">
-                    متابعة شاملة لتغطية الأقسام العلمية، عدد الورش المنجزة، وإجمالي المستفيدين من الطلبة
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold font-cairo border border-slate-200">
-                    إجمالي الأقسام: {deptStats.length}
-                  </span>
-                  <span className="px-3 py-1.5 rounded-xl bg-[#f0f7f2] text-[#1b4329] text-xs font-bold font-cairo border border-[#c8e2d1]">
-                    {completedSessions.length} ورشة منفذة
-                  </span>
-                </div>
-              </div>
-
-              {/* Department Full-Width Progress List */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {deptStats.map((item, idx) => {
-                  const maxStudents = Math.max(...deptStats.map(d => d.students), 100);
-                  const progressPercentage = Math.round((item.students / maxStudents) * 100);
-                  
-                  return (
-                    <div 
-                      key={idx} 
-                      className="p-4 rounded-xl border border-slate-200/90 bg-slate-50/50 hover:bg-white hover:border-[#1b4329]/40 hover:shadow-xs transition-all flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <div className="font-bold text-sm text-slate-900 font-kufi flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#1b4329]"></span>
-                            <span>{item.dept}</span>
-                          </div>
-                          <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#f0f7f2] text-[#1b4329] border border-[#c8e2d1] whitespace-nowrap">
-                            {item.completed} ورش منفذة
-                          </span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs text-slate-600 font-cairo mt-3 mb-1.5">
-                          <span>الطلاب المستفيدين:</span>
-                          <span className="font-bold text-[#143520] font-kufi text-sm">
-                            {item.students} <span className="text-xs font-normal text-slate-500 font-cairo">طالب وطالبة</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="w-full bg-slate-200/80 h-2.5 rounded-full overflow-hidden mt-2">
-                        <div
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            idx % 3 === 0 
-                              ? 'bg-gradient-to-r from-[#143520] to-[#1b4329]' 
-                              : idx % 3 === 1 
-                              ? 'bg-gradient-to-r from-[#a4874b] to-[#cbb279]' 
-                              : 'bg-gradient-to-r from-[#2d6a4f] to-[#40916c]'
-                          }`}
-                          style={{ width: `${Math.max(8, progressPercentage)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-            </div>
+            {/* Executive Analytics Dashboard with Recharts Charts: Monthly Growth Rate & 8-Program Coverage */}
+            <ExecutiveAnalyticsDashboard
+              sessions={sessions}
+              onOpenRequestModal={handleOpenRequestFacultyModal}
+              onNavigateToSessions={() => setAdminTab('sessions')}
+            />
 
           </div>
         )}
@@ -1785,6 +1620,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   >
                     <option value="all">كافة الحالات</option>
                     <option value="pending_approval">بانتظار الاعتماد ({pendingApprovalSessions.length})</option>
+                    <option value="pending_faculty_approval">في انتظار موافقة الدكتور ({sessions.filter(s => s.status === 'pending_faculty_approval').length})</option>
                     <option value="completed">منفذة ومعتمدة ({completedSessions.length})</option>
                     <option value="scheduled">مجدولة ({scheduledSessions.length})</option>
                     <option value="rejected">معادة للتعديل ({rejectedSessions.length})</option>
@@ -1803,8 +1639,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-xs font-medium self-end md:self-center">
-                <span className="px-3 py-1.5 rounded-xl bg-[#f0f7f2] text-[#1b4329] font-bold border border-[#c8e2d1] font-cairo">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-medium self-end md:self-center">
+                <button
+                  type="button"
+                  onClick={() => handleOpenRequestFacultyModal()}
+                  className="px-4 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-kufi"
+                >
+                  <Send className="w-3.5 h-3.5 text-blue-200" />
+                  <span>+ إرسال طلب دورة لدكتور</span>
+                </button>
+                <span className="px-3 py-2 rounded-xl bg-[#f0f7f2] text-[#1b4329] font-bold border border-[#c8e2d1] font-cairo">
                   إجمالي النتائج: {filteredSessions.length} ورشة
                 </span>
               </div>
@@ -1878,26 +1722,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                             {/* Status Badge */}
                             <td className="py-4 px-4 text-center whitespace-nowrap">
-                              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-kufi border ${
-                                isCompleted
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                  : isPendingApproval
-                                  ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                  : isRejected
-                                  ? 'bg-rose-50 text-rose-700 border-rose-200'
-                                  : 'bg-slate-50 text-slate-700 border-slate-200'
-                              }`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${
-                                  isCompleted ? 'bg-emerald-500' : isPendingApproval ? 'bg-amber-500' : isRejected ? 'bg-rose-500' : 'bg-slate-400'
-                                }`} />
-                                {isCompleted 
-                                  ? 'منفذة' 
-                                  : isPendingApproval 
-                                  ? 'قيد التدقيق' 
-                                  : isRejected 
-                                  ? 'معادة للتعديل' 
-                                  : 'مجدولة'}
-                              </span>
+                              {session.status === 'pending_faculty_approval' ? (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-kufi border bg-amber-100 text-amber-900 border-amber-300 shadow-2xs">
+                                  <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
+                                  <span>في انتظار موافقة الدكتور</span>
+                                </span>
+                              ) : (
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-kufi border ${
+                                  isCompleted
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    : isPendingApproval
+                                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                    : isRejected
+                                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                    : 'bg-slate-50 text-slate-700 border-slate-200'
+                                }`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${
+                                    isCompleted ? 'bg-emerald-500' : isPendingApproval ? 'bg-amber-500' : isRejected ? 'bg-rose-500' : 'bg-slate-400'
+                                  }`} />
+                                  {isCompleted 
+                                    ? 'منفذة' 
+                                    : isPendingApproval 
+                                    ? 'قيد التدقيق' 
+                                    : isRejected 
+                                    ? 'معادة للتعديل' 
+                                    : 'مجدولة'}
+                                </span>
+                              )}
                             </td>
 
                             {/* Stacked 2-Column Action Grid for maximum horizontal space efficiency */}
@@ -5266,6 +5117,245 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
 
           </div>
+        </div>
+      )}
+
+      {/* Request Workshop to Faculty Modal */}
+      {isRequestFacultyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto font-cairo animate-fadeIn">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-8">
+            
+            {/* Modal Header */}
+            <div className="p-5 sm:p-6 bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-white/15 flex items-center justify-center border border-white/20 shadow-xs">
+                  <Send className="w-5 h-5 text-blue-200" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base sm:text-lg font-kufi flex items-center gap-2">
+                    <span>إرسال طلب دورة مخصصة إلى دكتور</span>
+                    <span className="text-[11px] bg-blue-500/40 text-blue-100 px-2 py-0.5 rounded-full border border-blue-400/40">
+                      طلب إداري رسمي
+                    </span>
+                  </h3>
+                  <p className="text-xs text-blue-200/90 mt-0.5">
+                    توجيه دعوة رسمية من إدارة الوحدة لعضو هيئة التدريس لاعتماد وتقديم ورشة تخصصية للطلاب
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRequestFacultyModalOpen(false)}
+                className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body / Form */}
+            <form onSubmit={handleSendWorkshopRequest} className="p-6 space-y-4">
+              
+              {/* Doctor Selection */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                  الدكتور المستهدف من الكادر الأكاديمي <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={targetFacultyId}
+                  onChange={(e) => {
+                    setTargetFacultyId(e.target.value);
+                    const selected = whitelist.find((w) => w.id === e.target.value);
+                    if (selected && selected.department && DEPARTMENT_OPTIONS.includes(selected.department)) {
+                      setRequestAcademicProgram(selected.department);
+                    }
+                  }}
+                  required
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium text-slate-800"
+                >
+                  <option value="" disabled>اختر عضو هيئة التدريس...</option>
+                  {whitelist
+                    .filter((w) => w.status === 'active')
+                    .map((prof) => (
+                      <option key={prof.id} value={prof.id}>
+                        {prof.title} {prof.name} — قسم {prof.department} ({prof.campus})
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Program & Title */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Academic Program */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    البرنامج الأكاديمي المستهدف (الـ8) <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={requestAcademicProgram}
+                    onChange={(e) => setRequestAcademicProgram(e.target.value)}
+                    required
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium text-slate-800"
+                  >
+                    {DEPARTMENT_OPTIONS.map((dept, idx) => (
+                      <option key={idx} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Target Students Count */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    العدد المستهدف من الطلاب
+                  </label>
+                  <input
+                    type="number"
+                    min={10}
+                    max={200}
+                    value={requestTargetStudentsCount}
+                    onChange={(e) => setRequestTargetStudentsCount(Number(e.target.value))}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+              </div>
+
+              {/* Workshop Title */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                  عنوان الورشة المطلوبة <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="مثال: تحليلات الموارد البشرية وتطبيقات الفرز الذكي (ATS)..."
+                  value={requestWorkshopTitle}
+                  onChange={(e) => setRequestWorkshopTitle(e.target.value)}
+                  required
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+                />
+              </div>
+
+              {/* Date & Time Slot */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    تاريخ الانعقاد المقترح <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={requestDate}
+                    onChange={(e) => setRequestDate(e.target.value)}
+                    required
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    فترة التقديم (الوقت) <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={requestTimeSlot}
+                    onChange={(e) => setRequestTimeSlot(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+                  >
+                    {TIME_SLOTS_PRESETS.map((slot, idx) => (
+                      <option key={idx} value={slot}>
+                        {slot}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Hall & Delivery Mode */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    القاعة التدريبية المقترحة
+                  </label>
+                  <input
+                    type="text"
+                    value={requestHall}
+                    onChange={(e) => setRequestHall(e.target.value)}
+                    placeholder="مثال: قاعة التدريب الذكي (204)"
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                    نمط التنفيذ
+                  </label>
+                  <select
+                    value={requestDeliveryMode}
+                    onChange={(e) => setRequestDeliveryMode(e.target.value as 'in_person' | 'remote')}
+                    className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+                  >
+                    <option value="in_person">حضوري في مقر الكلية</option>
+                    <option value="remote">عبر البلاك بورد (جلسة افتراضية عن بعد)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Admin Notes */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 font-kufi">
+                  ملاحظات أو توجيهات إضافية للدكتور (اختياري)
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="أدخل أي محاور خاصة ترغب أن يركز عليها الدكتور لصالح طلاب القسم..."
+                  value={requestAdminNotes}
+                  onChange={(e) => setRequestAdminNotes(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
+                />
+              </div>
+
+              {/* Modal Footer */}
+              <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-3 font-kufi">
+                <span className="text-[11px] text-slate-500 font-cairo">
+                  سيتم إدراج الورشة بحالة <strong>"في انتظار موافقة الدكتور"</strong> فور الإرسال
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsRequestFacultyModalOpen(false)}
+                    className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    إلغاء
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5 text-blue-200" />
+                    <span>إرسال الطلب الآن</span>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* Floating Success Toast */}
+      {requestSuccessToast && (
+        <div className="fixed bottom-6 left-6 z-50 bg-slate-900 text-white p-4 rounded-2xl shadow-2xl border border-blue-500/40 flex items-center gap-3 animate-slideUp font-cairo text-xs max-w-md">
+          <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-4 h-4" />
+          </div>
+          <div className="flex-1 font-medium">{requestSuccessToast}</div>
+          <button
+            onClick={() => setRequestSuccessToast(null)}
+            className="text-slate-400 hover:text-white p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 

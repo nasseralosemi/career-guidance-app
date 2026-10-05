@@ -25,7 +25,8 @@ import {
   Printer,
   Check,
   Building2,
-  GraduationCap
+  GraduationCap,
+  Send
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { FacultyMember, WorkshopCourse, WorkshopSession, DeanOfficialConfig } from '../../types';
@@ -45,6 +46,7 @@ interface ProfessorDashboardProps {
   onOpenCourseDrawer: (course: WorkshopCourse) => void;
   onOpenCertificateModal: (session: WorkshopSession) => void;
   onConfirmSessionCompletion: (sessionId: string, actualStudentCount: number, feedbackNotes: string) => void;
+  onUpdateSessionStatus?: (sessionId: string, status: WorkshopSession['status']) => void;
   onLogout: () => void;
 }
 
@@ -60,6 +62,7 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
   onOpenCourseDrawer,
   onOpenCertificateModal,
   onConfirmSessionCompletion,
+  onUpdateSessionStatus,
   onLogout,
 }) => {
   const [internalActiveTab, setInternalActiveTab] = useState<'courses' | 'my_sessions' | 'certificates' | 'annual_report'>('courses');
@@ -258,6 +261,31 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
     setCompletionModalSession(null);
   };
 
+  // Incoming Workshop Requests from Admin Unit (status: pending_faculty_approval)
+  const incomingRequests = sessions.filter(
+    (s) =>
+      (s.professorId === currentProfessor.id ||
+        s.professorEmail?.toLowerCase() === currentProfessor.email?.toLowerCase()) &&
+      s.status === 'pending_faculty_approval'
+  );
+
+  const handleAcceptRequest = (sessionId: string) => {
+    if (onUpdateSessionStatus) {
+      onUpdateSessionStatus(sessionId, 'scheduled');
+    }
+    confetti({
+      particleCount: 90,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  };
+
+  const handleDeclineRequest = (sessionId: string) => {
+    if (onUpdateSessionStatus) {
+      onUpdateSessionStatus(sessionId, 'rejected');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-kufi" id="professor-portal">
       
@@ -432,6 +460,115 @@ export const ProfessorDashboard: React.FC<ProfessorDashboardProps> = ({
           </div>
         </div>
       </section>
+
+      {/* قسم خاص باسم: الطلبات الموجهة إليك من إدارة الوحدة (Incoming Admin Requests Section) */}
+      {incomingRequests.length > 0 && (
+        <section className="bg-gradient-to-r from-amber-500/10 via-amber-50 to-emerald-50/30 border-b-2 border-amber-300 py-6 px-4 sm:px-8 relative z-20 animate-fadeIn">
+          <div className="max-w-7xl mx-auto space-y-4">
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0">
+                  <Send className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base sm:text-lg font-kufi text-amber-950 flex items-center gap-2">
+                    <span>الطلبات الموجهة إليك من إدارة الوحدة</span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-600 animate-ping"></span>
+                    <span className="text-xs bg-amber-200/90 text-amber-950 px-2.5 py-0.5 rounded-full font-mono font-bold border border-amber-300">
+                      {incomingRequests.length} طلب جديد
+                    </span>
+                  </h3>
+                  <p className="text-xs text-amber-900/80 font-cairo mt-0.5">
+                    وجهت إدارة وحدة الإرشاد المهني والتوظيف طلباً لتقديم ورش العمل التالية بما يتوافق مع تخصصكم الأكاديمي واحتياجات سوق العمل
+                  </p>
+                </div>
+              </div>
+
+              <span className="text-xs font-bold text-amber-900 bg-amber-100/80 border border-amber-300 px-3 py-1.5 rounded-xl self-start sm:self-center font-cairo">
+                بانتظار موافقتكم واعتمادكم للجدولة
+              </span>
+            </div>
+
+            {/* Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {incomingRequests.map((req) => (
+                <div 
+                  key={req.id} 
+                  className="bg-white rounded-2xl p-5 border-2 border-amber-300/90 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-amber-500 to-amber-300"></div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#f0f7f2] text-[#1b4329] border border-[#c8e2d1] font-cairo inline-block mb-1.5">
+                          {req.department}
+                        </span>
+                        <h4 className="font-bold text-sm sm:text-base font-kufi text-slate-900 leading-snug">
+                          {req.courseTitle}
+                        </h4>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 font-kufi shrink-0">
+                        في انتظار موافقتك
+                      </span>
+                    </div>
+
+                    {/* Metadata details */}
+                    <div className="grid grid-cols-2 gap-2 text-xs font-cairo text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+                      <div className="flex items-center gap-1.5">
+                        <CalendarIcon className="w-3.5 h-3.5 text-amber-700" />
+                        <span>التاريخ: <strong>{req.date}</strong></span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-amber-700" />
+                        <span>الوقت: <strong>{req.timeSlot}</strong></span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                        <span className="truncate" title={req.hallName}>القاعة: <strong>{req.hallName}</strong></span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-amber-700" />
+                        <span>الطلاب: <strong>{req.studentCountTarget} مستهدف</strong></span>
+                      </div>
+                    </div>
+
+                    {/* Admin notes if any */}
+                    {req.sessionNotes && (
+                      <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 font-cairo">
+                        <strong className="font-bold font-kufi text-[11px] block mb-0.5">ملاحظات وتوجيه الإدارة:</strong>
+                        <span>{req.sessionNotes}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons in footer of card */}
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-end gap-2.5 font-kufi">
+                    <button
+                      type="button"
+                      onClick={() => handleDeclineRequest(req.id)}
+                      className="px-4 py-2 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-300 hover:border-rose-300 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      الاعتذار / تعديل الموعد
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleAcceptRequest(req.id)}
+                      className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>قبول الطلب واعتماده</span>
+                    </button>
+                  </div>
+
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </section>
+      )}
 
       {/* Navigation Tabs Bar with Warm Light Gold Accent & Mobile Scroll Indicator */}
       <div className="bg-white/95 border-b border-amber-200/70 sticky top-18 z-10 shadow-2xs relative">

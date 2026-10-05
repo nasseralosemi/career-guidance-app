@@ -54,7 +54,7 @@ export interface WorkshopCourse {
   isActive: boolean;
 }
 
-export type SessionStatus = 'scheduled' | 'in_progress' | 'pending_approval' | 'completed' | 'cancelled' | 'rejected';
+export type SessionStatus = 'scheduled' | 'in_progress' | 'pending_approval' | 'completed' | 'cancelled' | 'rejected' | 'pending_faculty_approval';
 
 export interface WorkshopSession {
   id: string;

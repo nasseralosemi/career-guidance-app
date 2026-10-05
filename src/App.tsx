@@ -65,7 +65,21 @@ export default function App() {
 
   const [sessions, setSessions] = useState<WorkshopSession[]>(() => {
     const saved = localStorage.getItem('mu_sessions');
-    return saved ? JSON.parse(saved) : INITIAL_SESSIONS;
+    if (saved) {
+      try {
+        const parsed: WorkshopSession[] = JSON.parse(saved);
+        INITIAL_SESSIONS.forEach((initSess) => {
+          const exists = parsed.some((s) => s.id === initSess.id);
+          if (!exists) {
+            parsed.push(initSess);
+          }
+        });
+        return parsed;
+      } catch (e) {
+        return INITIAL_SESSIONS;
+      }
+    }
+    return INITIAL_SESSIONS;
   });
 
   const [deanConfig, setDeanConfig] = useState<DeanOfficialConfig>(() => {
@@ -351,6 +365,11 @@ export default function App() {
     setSessions((prev) => prev.filter((s) => s.id !== sessionId));
   };
 
+  // Admin Session Creation (e.g. from faculty requests)
+  const handleAddNewSession = (newSession: WorkshopSession) => {
+    setSessions((prev) => [newSession, ...prev]);
+  };
+
   // Admin Session Edit
   const handleEditSession = (updatedSession: WorkshopSession) => {
     setSessions((prev) =>
@@ -404,6 +423,7 @@ export default function App() {
           onOpenCourseDrawer={handleOpenCourseDrawer}
           onOpenCertificateModal={handleOpenCertificateModal}
           onConfirmSessionCompletion={handleConfirmSessionCompletion}
+          onUpdateSessionStatus={handleUpdateSessionStatus}
           onLogout={handleLogout}
         />
 
@@ -455,6 +475,7 @@ export default function App() {
         onAddNewCourse={handleAddNewCourse}
         onUpdateCourse={handleUpdateCourse}
         onDeleteCourse={handleDeleteCourse}
+        onAddNewSession={handleAddNewSession}
         onUpdateSessionStatus={handleUpdateSessionStatus}
         onApproveSession={handleApproveSession}
         onRejectSession={handleRejectSession}
