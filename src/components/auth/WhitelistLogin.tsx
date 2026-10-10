@@ -191,11 +191,6 @@ export const WhitelistLogin: React.FC<WhitelistLoginProps> = ({
       <header className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs py-3 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <LogoBranding size="md" />
-          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#f0f7f2] text-[#1b4329] border border-[#c8e2d1]">
-            <ShieldCheck className="w-4 h-4 text-[#1b4329]" />
-            <span className="hidden sm:inline">نظام التوثيق الأكاديمي المعتمد</span>
-            <span className="sm:hidden">توثيق آمن</span>
-          </div>
         </div>
       </header>
 
